@@ -75,8 +75,16 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
 
             <div className="sidebar__link">
               <i className="fa fa-calendar"></i>
-              <Link to="/Calendar">Calendar</Link>
+              <Link to="/home/Calendar">Calendar</Link>
             </div>
+            <div className="sidebar__link">
+                    <i className="fa fa-archive"></i>
+                    <Link to="/home/FileUpload">File Manager</Link>
+                </div>
+                <div className="sidebar__link">
+                    <i className="fa fa-book"></i>
+                    <Link to="/home/FileEdit/document/lsdjhqsd">File Editor</Link> 
+                </div>
             <h3 className="text_pad">CHAT</h3>
             <div className="sidebar__link">
               <i className="fa fa-book"></i>

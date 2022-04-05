@@ -2,6 +2,8 @@ import React from "react";
 
 const Main = React.lazy(() => import("./components/main/Main"));
 const Calendar = React.lazy(() => import("./components/calendar/Calendar"));
+const FileEdit = React.lazy(() => import("./components/fileEdit/FileEdit"));
+const FileUpload = React.lazy(() => import("./components/file/File"));
 const Chat = React.lazy(() => import("./components/chat/Chat"));
 const VideoCall = React.lazy(() => import("./components/videoCall/VideoCall"));
 const Profile = React.lazy(() => import("./components/userProfile/Profile"));
@@ -20,7 +22,9 @@ const routes = [
   {path : "/resetpassword/:token" , name:"resetPassword" , component: ResetPassword},
   { path: "/home/dashboard", name: "Dashboard", component: Main },
   { path: "/home/employees", name: "Employees", component: Employees },
-  { path: "/Calendar", name: "Calendar", component: Calendar },
+  { path: "/home/Calendar", name: "Calendar", component: Calendar },
+  { path: "/home/FileEdit/document/:id", name: "FileEdit", component: FileEdit },
+  { path: "/home/FileUpload", name: "FileUpload", component: FileUpload }, 
   { path: "/home/chat", name: "Chat", component: Chat },
   { path: "/home/videocall", name: "videoCall", component: VideoCall },
   { path: "/home/profile", name: "profile", component: Profile },
