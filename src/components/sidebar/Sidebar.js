@@ -103,7 +103,7 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             </div>
             <div className="sidebar__link">
               <i className="fa fa-calendar"></i>
-              <a href="#">Special Days</a>
+              <Link to="/home/holidays">Holidays</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-files-o"></i>
@@ -111,13 +111,13 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             </div>
             <h3 className="text_pad">PAYROLL</h3>
             <div className="sidebar__link">
-              <i className="fa fa-money"></i>
-              <a href="#">Payroll</a>
-            </div>
-            <div className="sidebar__link">
-              <i className="fa fa-briefcase"></i>
-              <a href="#">Paygrade</a>
-            </div>
+                    <i className="fa fa-money"></i>
+                    <Link to="/home/employee_salary">Employee Salary</Link>
+                </div>
+                <div className="sidebar__link">
+                    <i className="fa fa-briefcase"></i>
+                    <Link to="/home/payroll_items">Payroll Items</Link>
+                </div>
             <div className="sidebar__logout">
               <i className="fa fa-power-off"></i>
               <a href="#">Log out</a>

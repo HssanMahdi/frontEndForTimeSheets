@@ -52,7 +52,7 @@ function Salary() {
                 <h1   style={{color: "#1e90ff",fontSize:"25px"}}><strong style={{color: "#1e90ff",fontSize:"30px"}}>Dashboard /</strong> Employee Salary</h1>
 
                 <div  style={{marginLeft:"1000px",marginTop:"180px"}}>
-                    <button type="button" className="btn btn-outline-primary" onClick={()=>history.push('/add_salary')}><img src={payLogo} alt="BigCo Inc. logo" width={25} height={25} /> Add All Salary</button>
+                    <button type="button" className="btn btn-outline-primary" onClick={()=>history.push('/add_salary')}><img src={payLogo} alt="BigCo Inc. logo" width={25} height={25} /> Add  Salary</button>
 
                 </div>
 
@@ -61,7 +61,7 @@ function Salary() {
 
                 </div>
                 <div  style={{marginLeft:"950px",marginTop:"10px"}}>
-                    <button type="button" className="btn btn-outline-primary" onClick={calculate_salarys}><img src={payLogo} alt="BigCo Inc. logo" width={25} height={25} /> Calculate Salaries</button>
+                    <button type="button" className="btn btn-outline-primary" onClick={calculate_salarys}><img src={payLogo} alt="BigCo Inc. logo" width={25} height={25} /> Calculate All Salaries</button>
 
                 </div>
 

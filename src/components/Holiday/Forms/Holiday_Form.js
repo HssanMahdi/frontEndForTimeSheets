@@ -47,7 +47,7 @@ function HolidayForm() {
             </div>
 
             <button type="button" className="btn btn-primary"
-                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/holidays')}}>Add
+                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/home/holidays')}}>Add
             </button>
         </div>
     );

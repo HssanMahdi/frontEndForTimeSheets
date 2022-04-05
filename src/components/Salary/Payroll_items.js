@@ -37,13 +37,13 @@ function PayrollItems() {
                         <div className="col-sm-12">
                             <ul className="nav nav-tabs nav-tabs-bottom">
                                 <li className="nav-item">
-                                    <Link to={"payroll_items"} className="nav-link active">Additions</Link>
+                                    <Link to={"/home/payroll_items"} className="nav-link active">Additions</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to={"overtime"} className="nav-link">Overtime</Link>
+                                    <Link to={"/home/overtime"} className="nav-link">Overtime</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to={"deductions"} className="nav-link">Deductions</Link>
+                                    <Link to={"/home/deductions"} className="nav-link">Deductions</Link>
                                 </li>
                             </ul>
                         </div>

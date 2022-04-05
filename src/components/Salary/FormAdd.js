@@ -65,7 +65,7 @@ function FormAdd() {
                        }}>
                     <option>--Select Employee--</option>
                     {   allemployees.map(emp=>
-                        <option value={emp._id}>{emp.firstName} {emp.lastName}</option>
+                        <option value={emp._id}>{emp.userName}</option>
                     )
                     }
                 </select>
@@ -127,7 +127,7 @@ function FormAdd() {
                        }}/>
             </div>
             <button type="button" className="btn btn-primary"
-                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/employee_salary')}}>Add
+                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('home/employee_salary')}}>Add
             </button>
         </div>
     );

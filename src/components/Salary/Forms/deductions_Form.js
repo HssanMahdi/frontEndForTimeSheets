@@ -50,7 +50,7 @@ function Deductions_Form() {
 
 
             <button type="button" className="btn btn-primary"
-                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/deductions')}}>Add
+                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/home/deductions')}}>Add
             </button>
         </div>
     );

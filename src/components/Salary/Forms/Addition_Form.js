@@ -56,7 +56,7 @@ function Addition_Form() {
             </div>
 
             <button type="button" className="btn btn-primary"
-                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/payroll_items')}}>Add
+                    style={{marginTop: "10px", marginLeft: "200px", width: "180px"}} onClick={() => {addSalary();history.push('/home/payroll_items')}}>Add
             </button>
         </div>
     );
