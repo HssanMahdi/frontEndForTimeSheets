@@ -1,0 +1,100 @@
+*, *::before *::after {
+    box-sizing: border-box;
+}
+main {
+    background: #f3f4f6;
+    grid-area: main;
+    overflow: auto;
+}
+.page__container .ql-editor {
+    width: 6.5in ;
+    min-height: 11in ;
+    padding: 1in;
+     margin: 1rem ; 
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    background-color: white;
+}
+.page__container .ql-container.ql-snow {
+    border: none;
+    display: flex;
+    justify-content: center;
+}
+.page__container .ql-toolbar.ql-snow {
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #f3f3f3;
+    border: none;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+}
+@page {
+    margin: 1in;
+}
+@media print {
+    body {
+        background: none;
+    }
+    .page__container .ql-editor {
+        width: 6.5in;
+        height: 9in;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+        align-self: flex-start;
+
+    }
+    .page__container .ql-toolbar.ql-snow {
+        display: none;
+
+    }
+    #sidebar {
+        display: none;
+    }
+    .navbarNav {
+        display: none;
+    }
+}
+
+/* Add a black background color to the top navigation */
+.NavigationBar {
+    background-color: rgb(233, 230, 230);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+  }
+  
+  /* Style the links inside the navigation bar */
+  .NavigationBar a {
+    float: left;
+    color: rgb(0, 89, 255);
+    text-align: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  /* Change the color of links on hover */
+  .NavigationBar a:hover {
+    background-color: #ddd;
+    color: rgb(0, 89, 255);
+  }
+  
+  /* Add a color to the active/current link */
+  .NavigationBar a.active {
+    background-color: rgb(0, 89, 255);
+    color: white;
+  }
+  #btn-share {
+    font-size: 17px; 
+  }
+  .div-btn {
+      margin-right: 50px;
+  }
+.dropdown-item {
+      left:0;
+  }
+
+  
