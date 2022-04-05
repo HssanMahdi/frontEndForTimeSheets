@@ -166,7 +166,7 @@ export default function Project(props) {
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
                                                     Start: {proj.startDate}
                                                 </div>
-                                                <button onClick={() => {
+                                                <button className='btn btn-outline-primary' onClick={() => {
                                                             detailsProject(proj._id)
                                                         }}> details</button>
                                                 {/* <div className="dropdown">

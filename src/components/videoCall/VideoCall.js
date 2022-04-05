@@ -10,14 +10,15 @@ import io from "socket.io-client";
 import "./videoCall.css";
 import logo from "../../assets/logo.png";
 import { useSelector } from "react-redux";
-// const socket = io.connect("http://localhost:3001");
+import { Redirect } from "react-router-dom";
+const socket = io.connect("http://localhost:3001");
 
 export default function VideoCall(props) {
   const { EmployeeReducer } = useSelector((state) => state);
-  const socket = EmployeeReducer.socket;
   const [me, setMe] = useState("");
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
+  const [redirectOrNo, setredirectOrNo] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
@@ -27,7 +28,6 @@ export default function VideoCall(props) {
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
-
   const callUser = () => {
     const peer = new Peer({
       initiator: true,
@@ -42,71 +42,46 @@ export default function VideoCall(props) {
         name: EmployeeReducer.connectedEmployee.userName,
       });
     });
-    peer.on("connect", (stream) => {
+    peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
     socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
       peer.signal(signal);
     });
+
     connectionRef.current = peer;
   };
-
   useEffect(() => {
-    if (props.location.state.callerSignal) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          myVideo.current.srcObject = stream;
-        });
-      // socket.on("callUser", (data) => {
-      //   setReceivingCall(true);
-      //   setCaller(data.from);
-      //   // setName(data.name);
-      //   setName(EmployeeReducer.connectedEmployee.userName);
-      //   setCallerSignal(data.signal);
-      // });
-      setCallAccepted(true);
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: stream,
+    setEmpToCall(props.location.state.empToCall);
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setStream(stream);
+        myVideo.current.srcObject = stream;
       });
-      peer.on("signal", (data) => {
-        console.log("data : ",data)
-        socket.emit("answerCall", { signal: data, to: props.location.state.caller });
-      });
-      peer.on("stream", (stream) => {
-        userVideo.current.srcObject = stream;
-      });
-      peer.signal(props.location.state.callerSignal);
-      connectionRef.current = peer;
-    } else {
-      setEmpToCall(props.location.state.empToCall);
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          myVideo.current.srcObject = stream;
-        });
-      socket.emit("sendMe", {
-        me: EmployeeReducer.connectedEmployee._id
-      });
-      socket.on("me", (id) => {
-        setMe(id);
-      });
-      socket.on("callUser", (data) => {
-        setReceivingCall(true);
-        setCaller(data.from);
-        // setName(data.name);
-        setName(EmployeeReducer.connectedEmployee.userName);
-        setCallerSignal(data.signal);
-      });
-    }
+    socket.on("me", (id) => {
+      setMe(id);
+    });
+    socket.on("callUser", (data) => {
+      setReceivingCall(true);
+      setCaller(data.from);
+      // setName(data.name);
+      setName(EmployeeReducer.connectedEmployee.userName);
+      setCallerSignal(data.signal);
+    });
   }, []);
+  console.log("me",me)
   //unmount
   useEffect(() => () => console.log("unmount"), []);
+
+  useEffect(() => {
+    socket.emit("persistIdEmployee", {
+      me: me,
+      name: EmployeeReducer.connectedEmployee.userName,
+      id: EmployeeReducer.connectedEmployee._id,
+    });
+  }, [me]);
   const answerCall = () => {
     setCallAccepted(true);
     const peer = new Peer({
@@ -115,12 +90,12 @@ export default function VideoCall(props) {
       stream: stream,
     });
     peer.on("signal", (data) => {
-      console.log("data : ",data)
       socket.emit("answerCall", { signal: data, to: caller });
     });
     peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
+
     peer.signal(callerSignal);
     connectionRef.current = peer;
   };
@@ -131,9 +106,11 @@ export default function VideoCall(props) {
   const leaveCall = () => {
     setCallEnded(true);
     connectionRef.current.destroy();
+    setredirectOrNo(true)
   };
+  // console.log("emppp", empToCall)
   return (
-    <main>
+    <main id="idVIID">
       <div className="main__container">
         <div className="bodyVideo">
           <div className="side__img ">
@@ -256,6 +233,10 @@ export default function VideoCall(props) {
           </div>
         </div>
       </div>
+      {redirectOrNo ? (
+          <Redirect to="/home/chat" />
+        ) : (null)
+        }
     </main>
   );
 }

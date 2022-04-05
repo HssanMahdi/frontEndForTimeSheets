@@ -14,6 +14,8 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
   useEffect(() => {
     if (location.pathname === "/home/videocall") {
       setPath(true);
+    }else{
+      setPath(false)
     }
   });
   useEffect(() => {
