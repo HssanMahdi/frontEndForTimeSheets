@@ -2,8 +2,9 @@ main {
   background: #f3f4f6;
   grid-area: main;
   overflow: auto;
-  width: 1702px;
+ 
 }
+#idVIID{ width: 1560px;}
 .main__container {
   padding: 20px 35px;
 }
