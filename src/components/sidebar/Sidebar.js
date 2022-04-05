@@ -66,7 +66,7 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             </div>
             <div className="sidebar__link">
               <i className="fa fa-building-o"></i>
-              <a href="#">Project Management</a>
+              <Link to="/project">Project Management</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-archive"></i>
