@@ -21,6 +21,10 @@ export default function SignUpToCompany(props) {
         password: "",
         company: "",
         confirmPassword: "",
+        todaysWorkedHours: 0,
+        hourPrice: 0,
+        totalWorkedHours: 0,
+        hourPrice: 15
     });
     const onChange1 = (e) => {
         setEmployeeSignUp({ ...employeeSignUp, [e.target.name]: e.target.value });

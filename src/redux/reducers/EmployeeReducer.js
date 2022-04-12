@@ -12,7 +12,8 @@ const initialState = {
   timeLogin: "",
   longLatLogin: {},
   socket: "",
-  taskNow:{}
+  taskNow: {},
+  checkPresence: []
 };
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -68,7 +69,8 @@ export default function (state = initialState, action) {
         timeLogin: "",
         longLatLogin: {},
         socket: "",
-        taskNow:{}
+        taskNow: {},
+        checkPresence: []
       };
     case "LOCATION":
       return {
@@ -85,6 +87,11 @@ export default function (state = initialState, action) {
         ...state,
         taskNow: action.payload
       };
+    case 'CHANGE_CHECK_PRESENCE':
+      return {
+        ...state,
+        checkPresence: action.payload
+      }
     default:
       return state;
   }

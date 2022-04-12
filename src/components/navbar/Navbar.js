@@ -6,17 +6,20 @@ import { useDispatch, useSelector } from "react-redux";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useHistory } from "react-router";
-import { Logout } from "../../redux/actions/EmployeeActions";
-import { useEffect, useState } from "react";
+import { ChangeCheckPresence, Logout } from "../../redux/actions/EmployeeActions";
+import { useEffect, useRef, useState } from "react";
 import { Redirect } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from "axios";
+import * as faceapi from '@vladmandic/face-api';
 
 export default function Navbar({ sidebarOpen, openSidebar }) {
   const { EmployeeReducer } = useSelector((state) => state);
   const [redirectOrNo, setredirectOrNo] = useState(false);
   const [link, setLink] = useState("");
+  const [stream, setStream] = useState();
+  const myVideo = useRef();
   const [keysPressed, setKeysPressed] = useState([]);
   const dispatch = useDispatch();
   const config = {
@@ -40,10 +43,31 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       const { key } = event
       keysPressed.push(key)
     })
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri('/model'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/model'),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/model"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/model")
+    ]).then(
+      checkVideo(),
+      handleVideo()
+    )
+      .catch((err) => console.log("err : ", err))
   }, [])
+
   useEffect(() => {
     setredirectOrNo(false)
   })
+
+  function checkVideo() {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setStream(stream);
+        myVideo.current.srcObject = stream;
+      });
+  }
+
   function sweetAlert() {
     const MySwal = withReactContent(Swal)
     Swal.fire({
@@ -54,7 +78,27 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       timer: 1500
     })
   }
-  const logout= async () => {
+
+  const handleVideo = async () => {
+    setInterval(async () => {
+      const detections = await faceapi.detectAllFaces(
+        myVideo.current,
+        new faceapi.TinyFaceDetectorOptions()
+      )
+        .withFaceLandmarks()
+        .withFaceExpressions();
+
+      if (detections[0]) {
+        EmployeeReducer.checkPresence.push(true)
+        dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence))
+      } else {
+        EmployeeReducer.checkPresence.push(false)
+        dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence))
+      }
+    }, 1000);//900000 every 15 mins
+  }
+
+  const logout = async () => {
     // const toUpdate = {
     //   todaysWorkedHours: 0,
     //   totalWorkedHours: 0,
@@ -92,13 +136,20 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
     // console.log(toUpdate)
     navigator.geolocation.getCurrentPosition((position) => {
       if (getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, EmployeeReducer.longLatLogin.latitude, EmployeeReducer.longLatLogin.longitude)) {
-        EmployeeReducer.connectedEmployee.notifications.push("Employee suspected of moving long distances while working")
-        let data={
+        EmployeeReducer.connectedEmployee.notifications.push("Employee suspected of moving long distances while supposedly working")
+        let data = {
           notifications: EmployeeReducer.connectedEmployee.notifications
         };
-        axios.post("/employee/updatenotifs",data,config)
+        axios.post("/employee/updatenotifs", data, config)
       }
     })
+    if (EmployeeReducer.checkPresence.filter(x => x === false).length > EmployeeReducer.checkPresence.filter(x => x === true).length) {
+      EmployeeReducer.connectedEmployee.notifications.push("Employee suspected of not being in front of his computer while supposedly working")
+      let data = {
+        notifications: EmployeeReducer.connectedEmployee.notifications
+      };
+      // axios.post("/employee/updatenotifs", data, config)
+    }
     dispatch(Logout())
     console.log("keypressed : ", keysPressed)
     setredirectOrNo(true)
@@ -178,14 +229,15 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
           // <a href="#">Subscribers</a>
           <>
             <CopyToClipboard text={link} >
-              <Button
+              <button
+                class="button-53"
                 variant="contained"
                 onClick={sweetAlert}
                 style={{ backgroundColor: "#3984E6" }}
                 starticon={<AssignmentIcon fontSize="large" />}
               >
                 Invite employees
-              </Button>
+              </button>
             </CopyToClipboard>
           </>
         ) : null}
@@ -193,6 +245,17 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         <a className="active_link" href="#">
           Manager
         </a> <Link to={"/home/projectPlanning"}>Project Planning</Link>*/}
+        <span>
+          <video
+            crossOrigin='anonymous'
+            playsInline
+            muted
+            ref={myVideo}
+            width={"70"}
+            height={"35"}
+            autoPlay
+          />
+        </span>
       </div>
       <div className="navbar__right">
         <a href="#">

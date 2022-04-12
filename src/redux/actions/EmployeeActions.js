@@ -94,6 +94,13 @@ export const ChatFetcher = (config) => async (dispatch) => {
     });
 };
 
+export const ChangeCheckPresence = (checkPresence) => dispatch => {
+  dispatch({
+    type: 'CHANGE_CHECK_PRESENCE',
+    payload: checkPresence
+  })
+}
+
   // await axios
   //   .put(`/employee/updatehours`, employeeToUpdate.connectedEmployee, config)
   //   .then((result) => {

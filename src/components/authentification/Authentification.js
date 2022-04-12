@@ -17,7 +17,11 @@ export default function Authentification() {
     password: "",
     company: "",
     confirmPassword: "",
-    isManager: true
+    isManager: true,
+    todaysWorkedHours: 0,
+    hourPrice: 0,
+    totalWorkedHours: 0,
+    hourPrice: 15
   });
   const [employeeLogin, setEmployeeLogin] = useState({
     email: "",
@@ -95,7 +99,7 @@ export default function Authentification() {
                           submit
                         </button>
                         <p className="mb-0 mt-4 text-center">
-                        <Link to={"/forgetpassword"}>Forgot your password?</Link>
+                          <Link to={"/forgetpassword"}>Forgot your password?</Link>
                         </p>
                       </div>
                     </div>
@@ -160,8 +164,8 @@ export default function Authentification() {
                           <i className="input-icon uil uil-lock-alt"></i>
                           {employeeSignUp.password !== employeeSignUp.confirmPassword ? <div> Password must match  </div> : null}
                           {EmployeeReducer.errSignUp ? (
-                          <div>Email already exist</div>
-                        ) : null}
+                            <div>Email already exist</div>
+                          ) : null}
                           <button className="btn-a mt-4" onClick={signUp}>
                             submit
                           </button>

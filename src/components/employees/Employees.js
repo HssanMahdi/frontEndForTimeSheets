@@ -20,7 +20,21 @@ export default function Employees() {
     useEffect(() => {
         fetchEmployeesList();
     }, [])
-    console.log(employeesList)
+
+    const changeState = async (idEmployee, state) => {
+        let data = {
+            isManager: state
+        };
+        await axios.put(`/employee/changeemployeestate/${idEmployee}`, data, config)
+            .then(fetchEmployeesList())
+            .catch((err) => console.log(err))
+    }
+
+    const deleteEmployee = async (idEmployee) =>{
+        await axios.delete(`/employee/${idEmployee}`, config)
+            .then(fetchEmployeesList())
+            .catch((err) => console.log(err))
+    }
     return (
         <main>
             <div class="main__container">
@@ -48,34 +62,54 @@ export default function Employees() {
                                                         <table class="table widget-26">
                                                             <tbody>
                                                                 {employeesList?.map((employee, key) => (
-                                                                <tr key={key}>
-                                                                    <td>
-                                                                        <div class="widget-26-job-emp-img">
-                                                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Company" />
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="widget-26-job-title">
-                                                                            <span >{employee.userName}</span>
-                                                                            <p class="m-0"><a href="#" class="employer-name">Joined the : </a><span class="text-muted time"><Moment format=" DD-MM-YYYY ">{employee.createdAt}</Moment></span></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="widget-26-job-info">
-                                                                            <p class="type m-0">Part-Time</p>
-                                                                            <p class="text-muted m-0">in <span class="location">Mumbai, IN</span></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="widget-26-job-salary">$ {employee.hourPrice }/hr</div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="widget-26-job-category bg-soft-info">
-                                                                            <i class="indicator bg-info"></i>
-                                                                            <span>Infra Supervision</span>
-                                                                        </div>
-                                                                    </td>
-                                                                    {/* <td>
+                                                                    <tr key={key}>
+                                                                        <td>
+                                                                            <div class="widget-26-job-emp-img">
+                                                                                <img src={employee.images} alt="Company" />
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="widget-26-job-title">
+                                                                                <span >{employee.userName}</span>
+                                                                                <p class="m-0"><a href="#" class="employer-name">Joined the : </a><span class="text-muted time"><Moment format=" DD-MM-YYYY ">{employee.createdAt}</Moment></span></p>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="widget-26-job-info">
+                                                                                <p class="type m-0">Email :</p>
+                                                                                <p class="text-muted m-0">in <span class="location">{employee.email}</span></p>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="widget-26-job-salary">$ {employee.hourPrice}/hr</div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="widget-26-job-category bg-soft-info">
+                                                                                <i class="indicator bg-info"></i>
+                                                                                {employee.isManager ? (
+                                                                                    <span>Manager</span>
+                                                                                ) :
+                                                                                    <span>Employee</span>
+                                                                                }
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            {employee.isManager ? (
+                                                                                <button class="button-29" role="button" onClick={() => changeState(employee._id, false)}>Change to employee</button>
+                                                                            ) :
+                                                                                <button class="button-29" role="button" onClick={() => changeState(employee._id, true)}>Change to manager</button>
+                                                                            }
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="icon-trash" onClick={() => deleteEmployee(employee._id)}>
+                                                                                <div class="trash-lid" style={{backgroundColor: "#02A7D7"}}></div>
+                                                                                <div class="trash-container" style={{backgroundColor: "#02A7D7"}}></div>
+                                                                                <div class="trash-line-1"></div>
+                                                                                <div class="trash-line-2"></div>
+                                                                                <div class="trash-line-3"></div>
+                                                                            </div>
+                                                                        </td>
+                                                                        {/* <td>
                                                                         <div class="widget-26-job-starred">
                                                                             <a href="#">
                                                                                 <svg
@@ -95,7 +129,7 @@ export default function Employees() {
                                                                             </a>
                                                                         </div>
                                                                     </td> */}
-                                                                </tr>
+                                                                    </tr>
                                                                 ))}
                                                             </tbody>
                                                         </table>
