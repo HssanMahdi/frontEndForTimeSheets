@@ -81,13 +81,16 @@
   text-decoration: none #000000 solid;
   text-decoration-thickness: auto;
   width: 100%;
-  max-width: 460px;
+  max-width: 218px;
+  font-size: 16px !important;
   position: absolute;
   cursor: pointer;
-  transform: rotate(-2deg);
+  /* transform: rotate(-2deg); */
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  top: 2px;
+  
 }
 
 .button-53:focus {

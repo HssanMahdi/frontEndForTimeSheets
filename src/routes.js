@@ -28,8 +28,8 @@ const ProjectPlanning = React.lazy(() =>
 
 const routes = [
   { path: "/", exact: true, name: "Login" },
-  {path : "/signup/:token" , name:"signUp" , component: SignUpToCompany},
-  {path : "/resetpassword/:token" , name:"resetPassword" , component: ResetPassword},
+  // {path : "/signup/:token" , name:"signUp" , component: SignUpToCompany},
+  // {path : "/resetpassword/:token" , name:"resetPassword" , component: ResetPassword},
   { path: "/home/dashboard", name: "Dashboard", component: Main },
   { path: "/home/employees", name: "Employees", component: Employees },
   { path: "/home/Calendar", name: "Calendar", component: Calendar },

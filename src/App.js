@@ -39,16 +39,19 @@ export default function App() {
             render={(props) => <Login {...props} />}
           />
           <Route
+            exact
             path="/forgetpassword"
             name="forgetPassword"
             render={(props) => <ForgetPassword {...props} />}
           />
           <Route
+            exact
             path="/resetpassword"
             name="resetPassword"
             render={(props) => <ResetPassword {...props} />}
           />
           <Route
+            exact
             path="/signup/:token"
             name="signuptocompany"
             render={(props) => <SignUpToCompany {...props} />}
