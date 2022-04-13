@@ -100,9 +100,10 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         EmployeeReducer.checkPresence.push(false);
         dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence));
       }
-    }, 900000); //900000 every 15 mins
+      console.log("EmployeeReducer.checkPresence : ",EmployeeReducer.checkPresence)
+    }, 4000); //900000 every 15 mins
   };
-
+  
   function Item(props) {
     //? `New message in ${notif.chat.chatName}`:`New message in ${notif.sender.userName}`
     if (props.props.chat.isGroup) {
@@ -204,7 +205,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       let data = {
         notifications: EmployeeReducer.connectedEmployee.notifications,
       };
-      // axios.post("/employee/updatenotifs", data, config)
+      axios.post("/employee/updatenotifs", data, config)
     }
     dispatch(Logout());
     console.log("keypressed : ", keysPressed);

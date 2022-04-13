@@ -1,7 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import hello from "../../assets/edit.svg";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 export default function Profile() {
+  const { EmployeeReducer } = useSelector((state) => state);
+  const [employeeModif, setEmployeeModif] = useState({
+    userName: "",
+    email: "",
+    phone: "",
+    adress:""
+  });
+  const config = {
+    headers: {
+      Authorization: `Bearer ${EmployeeReducer.token}`,
+    },
+  };
+  const onChange = (e) => {
+    setEmployeeModif({ ...employeeModif, [e.target.name]: e.target.value });
+  };
+  function edit (){
+    Swal.fire({
+      title: 'Submit your Github username',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Look up',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+        return fetch(`//api.github.com/users/${login}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            return response.json()
+          })
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Request failed: ${error}`
+            )
+          })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: `${result.value.login}'s avatar`,
+          imageUrl: result.value.avatar_url
+        })
+      }
+    })  
+  }
   return (
     <main>
       <div className="main__container">
@@ -39,8 +90,13 @@ export default function Profile() {
                       alt="Avatar"
                     />
                   </section>
-                  <h3 className="my-3">Mahdi Hssan</h3>
-                  <h5>Web Designer & Developer</h5>
+                  <h3 className="my-3" >{EmployeeReducer.connectedEmployee.userName}</h3>
+                  {EmployeeReducer.connectedEmployee.isManager ? (
+                    <h5>Role : Manager</h5>
+                  ) : (
+                    <h5>Role : Employee</h5>
+                  )
+                  }
                 </td>
                 <td>
                   <ul className="classs">
@@ -48,71 +104,50 @@ export default function Profile() {
                       <i
                         style={{ color: "#252d57" }}
                         className="bi bi-person-circle mx-2"
-                      ></i>
-                      <b>Mahdi</b>
-                      <i
-                        className="fa fa-edit faa"
-                        id="edit1"
-                        //   onclick="document.getElementById('fname').style.pointerEvents='auto';document.getElementById('fname').focus();this.style.display='none'; document.getElementById('check1').style.display='inline-block';"
-                      ></i>
-                      <i
+                      />
+                      <b>{EmployeeReducer.connectedEmployee.userName}</b>
+                      {/* <i  
                         className="fa faa fa-check"
                         style={{ display: "none" }}
                         id="check1"
-                        //   onclick="document.getElementById('edit1').style.display='inline-block';this.style.display='none';document.getElementById('fname').style.pointerEvents='none';"
-                      ></i>
+                      /> */}
                     </li>
                     <li className="classProfile">
                       <i
                         style={{ color: "#252d57" }}
                         className="bi bi-envelope-fill mx-2"
-                      ></i>
-                      <b>Mahdi@gmail.com</b>
+                      />
+                      <b >{EmployeeReducer.connectedEmployee.email}</b>
+                      
                     </li>
                     <li className="classProfile">
                       <i
                         style={{ color: "#252d57" }}
                         className="bi bi-telephone mx-2"
-                      ></i>
-                      <b>Contact number</b>
-                      <i
-                        className="fa faafa-edit"
-                        id="edit2"
-                        //   onclick="document.getElementById('mobile').style.pointerEvents='auto';document.getElementById('mobile').focus();this.style.display='none'; document.getElementById('check2').style.display='inline-block';"
-                      ></i>
-                      <i
+                      />
+                      <b name="phone" >{EmployeeReducer.connectedEmployee.phone}</b>
+                      {/* <i
                         className="fa faa fa-check"
                         style={{ display: "none" }}
                         id="check2"
-                        //   onclick="document.getElementById('edit2').style.display='inline-block';document.getElementById('mobile').style.pointerEvents='none';this.style.display='none';"
-                      ></i>
+                      /> */}
                     </li>
                     <li className="classProfile">
                       <i
                         style={{ color: "#252d57" }}
                         className="bi bi-mailbox2 mx-2"
-                      ></i>
-                      <b>Address</b>
-                      <i
-                        className="fa faa  fa-edit"
-                        id="edit3"
-                        //   onclick="document.getElementById('address').style.pointerEvents='auto';document.getElementById('address').focus();this.style.display='none'; document.getElementById('check3').style.display='inline-block';"
-                      ></i>
-                      <i
+                      />
+                      <b >{EmployeeReducer.connectedEmployee.address}</b>
+                      {/* <i
                         className="fa faa  fa-check"
                         style={{ display: "none" }}
                         id="check3"
-                        //   onclick="document.getElementById('edit3').style.display='inline-block';document.getElementById('address').style.pointerEvents='none';this.style.display='none';"
-                      ></i>
+                      /> */}
                     </li>
                   </ul>
+                  <button className="button-29" >Edit Profile</button>
                 </td>
               </tr>
-              {/* <tr>
-                <td className="section2">
-                  <h2 style={{ textAlign: "left" }}>My Projects</h2>
-                </td>
-              </tr> */}
             </tbody>
           </table>
         </div>
