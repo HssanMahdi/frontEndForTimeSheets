@@ -80,6 +80,20 @@ export const Logout = (employeeToUpdate, config) => async (dispatch) => {
   });
 };
 
+export const notifications = (notif) => async (dispatch) => {
+  dispatch({
+    type: "NOTIFICATIONS_CHANGE",
+    payload: notif
+  });
+};
+
+export const ChangeSelectedChat = (chat) => async (dispatch) => {
+  dispatch({
+    type: "SELECTEDCHAT_CHANGE",
+    payload: chat
+  });
+};
+
 export const ChatFetcher = (config) => async (dispatch) => {
   await axios
     .get("/chat", config)

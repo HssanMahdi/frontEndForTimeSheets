@@ -9,7 +9,7 @@ import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatFetcher } from "../../redux/actions/EmployeeActions";
 // import { Socket } from "socket.io-client";
 
-export default function Chat() {
+export default function Chat(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const socket = EmployeeReducer.socket;
@@ -47,11 +47,15 @@ export default function Chat() {
     dispatch(CompanWorkers(config));
     fetchChats();
   }, []);
+  useEffect(() => {
+    setSelectedChat(EmployeeReducer.selectedChat);
+  }, [EmployeeReducer.selectedChat]);
   if (socket) {
     socket.on("refetchChats", () => {
       fetchChats();
     });
   }
+
   useEffect(() => {
     dispatch(CompanWorkers(config));
     searchEmployees();
@@ -131,7 +135,7 @@ export default function Chat() {
                   className="list-unstyled scrollbar-card chat-list mt-2 mb-0"
                 >
                   {EmployeeReducer.chats?.map((chat) =>
-                    typeof chat.isGroup !== "undefined" ? (
+                    !chat.isGroup ? (
                       <React.Fragment key={chat._id}>
                         <li
                           className="clearfix"

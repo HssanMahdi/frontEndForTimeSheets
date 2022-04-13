@@ -2,21 +2,31 @@ main {
   background: #f3f4f6;
   grid-area: main;
   overflow: auto;
- 
+  
 }
-#idVIID{ width: 1560px;}
+
+#idVIID{
+  width: 1690px;
+}
+/* #idVIID {
+  width: 1560px;
+} */
+
 .main__container {
   padding: 20px 35px;
 }
+
 .main__title {
   display: flex;
   align-items: center;
 }
-.main__title > img {
+
+.main__title>img {
   max-height: 100px;
   object-fit: contain;
   margin-right: 20px;
 }
+
 .container-video {
   display: grid;
   grid-template-columns: 7fr 3fr;
@@ -25,17 +35,16 @@ main {
 .myId {
   margin-right: 5rem;
   border-radius: 140px;
-  background: #c9d6ff; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #e2e2e2,
-    #c9d6ff
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #e2e2e2,
-    #c9d6ff
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #c9d6ff;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right,
+      #e2e2e2,
+      #c9d6ff);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right,
+      #e2e2e2,
+      #c9d6ff);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   padding: 2rem;
   display: grid;
@@ -56,41 +65,48 @@ main {
   align-items: stretch;
   margin: 38px 28px;
 }
+
 .video-container :first-child {
   width: 450px;
   margin-left: 10px;
   margin-right: 92px;
 }
+
 .stream-video {
   border-radius: 25px;
   width: 495px !important;
 }
+
 .caller {
   text-align: center;
   color: #fff;
 }
+
 .side__img {
   display: flex;
   align-items: center;
 }
+
 .img_video {
   width: 80px;
   margin: 20px 4px 25px 20px;
 }
 
 .bodyVideo {
-  background: #4776e6; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #8e54e9,
-    #4776e6
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #8e54e9,
-    #4776e6
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  height: 677px;
+  position: relative;
+  width: 100%;
+  background: #4776e6;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right,
+      #8e54e9,
+      #4776e6);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right,
+      #8e54e9,
+      #4776e6);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  min-height: 677px;
+  overflow: auto;
   border-radius: 37px;
 }
 
@@ -107,6 +123,7 @@ main {
   border-radius: 15px;
   background-color: #31384afc;
 }
+
 
 .header-call {
   position: relative;
@@ -143,24 +160,31 @@ main {
   0% {
     transform: rotate(0deg);
   }
+
   20% {
     transform: rotate(-20deg);
   }
+
   21% {
     transform: rotate(0deg);
   }
+
   40% {
     transform: rotate(-20deg);
   }
+
   41% {
     transform: rotate(0deg);
   }
+
   60% {
     transform: rotate(-20deg);
   }
+
   80% {
     transform: rotate(-10deg);
   }
+
   100% {
     transform: rotate(0deg);
   }
@@ -177,6 +201,27 @@ main {
   -webkit-animation: wave 1.4s infinite linear;
   -o-animation: wave 1.4s infinite linear;
   animation: wave 1.4s infinite linear;
+}
+
+.vidBtn {
+  margin: 10px;
+  display: block;
+  padding: 8px;
+
+  border-radius: 10px;
+}
+
+.contVid {
+  background: rgba(235, 235, 235, 0.934);
+  text-align: center;
+  width: 50px;
+  margin: 10px;
+  height: 269px;
+  position: relative;
+  border-radius: 30px;
+  top: 12px;
+
+  padding-top: 51px;
 }
 
 .two {
@@ -197,6 +242,7 @@ main {
     opacity: 1;
     border-width: 8px;
   }
+
   100% {
     width: 320px;
     height: 320px;
@@ -232,9 +278,11 @@ main {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.2;
   }
+
   100% {
     opacity: 1;
   }
@@ -303,4 +351,32 @@ main {
 a {
   text-decoration: none;
   color: #fff;
+}
+
+@media only screen and (min-width : 1224px) {
+  .bodyVideo {
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    position: relative;
+  }
+}
+
+
+@media only screen and (max-width : 987px) {
+  .bodyVideo {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+    position: relative;
+  }
+}
+
+@media only screen and (max-width : 784px) {
+  .bodyVideo {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+    position: relative;
+  }
 }

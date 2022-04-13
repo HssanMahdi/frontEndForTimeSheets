@@ -12,6 +12,8 @@ const initialState = {
   timeLogin: "",
   longLatLogin: {},
   socket: "",
+  notification: [],
+  selectedChat: {},
   taskNow: {},
   checkPresence: []
 };
@@ -69,6 +71,8 @@ export default function (state = initialState, action) {
         timeLogin: "",
         longLatLogin: {},
         socket: "",
+		notification: [],
+        selectedChat: {},
         taskNow: {},
         checkPresence: []
       };
@@ -92,6 +96,16 @@ export default function (state = initialState, action) {
         ...state,
         checkPresence: action.payload
       }
+	case "NOTIFICATIONS_CHANGE":
+      return {
+        ...state,
+        notification: action.payload
+      };
+    case "SELECTEDCHAT_CHANGE":
+      return {
+        ...state,
+        selectedChat: action.payload
+      };
     default:
       return state;
   }

@@ -25,6 +25,10 @@ const DetailsProject = React.lazy(() => import("./components/projectManagement/d
 const ProjectPlanning = React.lazy(() =>
   import("./components/projectPlanning/ProjectPlanning")
 );
+const GroupCall = React.lazy(() => import("./components/GroupVideoCall/Room"));
+const MakeGroupCall = React.lazy(() =>
+  import("./components/GroupVideoCall/CreateRoom")
+);
 
 const routes = [
   { path: "/", exact: true, name: "Login" },
@@ -50,6 +54,16 @@ const routes = [
   { path: '/home/holidays', name: 'holidays',component: Holiday  },
   { path: '/add_holiday', name: 'add_holiday',component: Add_holiday  },
 { path: "/detailsProject", name: 'updateProject', component: DetailsProject },
+  {
+    path: "/home/projectPlanning",
+    name: "projectPlanning",
+    component: ProjectPlanning,
+  },
+  {
+    path: "/home/makecall/:roomID",
+    name: "groupcallId",
+    component: GroupCall,
+  },
   {
     path: "/home/projectPlanning",
     name: "projectPlanning",

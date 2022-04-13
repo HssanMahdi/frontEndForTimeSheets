@@ -25,7 +25,21 @@
   font-size: 15px;
   font-weight: 700;
 }
-
+.common-count {
+  background: #b52818;
+  color: #ffffff;
+ 
+  border-radius: 30px;
+  text-align: center;
+  border: 1px solid #fff;
+  position: absolute;
+  top: 8px;
+  width: 19px;
+  font-size: 10px;
+  height: 18px;
+  padding-top: 0px;
+  right: 122px;
+}
 .navbar__left .active_link {
   color: #265acc;
   border-bottom: 3px solid #265acc;

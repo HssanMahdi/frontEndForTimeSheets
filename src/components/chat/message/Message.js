@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import io from "socket.io-client";
 import { useHistory } from "react-router-dom";
 import UpdateChatModal from "../miscellaneous/UpdateChatModal";
 import Moment from "react-moment";
+import { notifications } from "../../../redux/actions/EmployeeActions";
 // const socket = io.connect("http://localhost:3001");
 var socket, selectedChatCompare;
 
@@ -17,6 +18,7 @@ export default function Message(props) {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const dispatch = useDispatch();
   const ref = useRef();
   const config = {
     headers: {
@@ -73,8 +75,8 @@ export default function Message(props) {
 
       socket.emit("new message", data);
       setMessages([...messages, data]);
-      
-        if (ref.current !== null) {
+
+      if (ref.current !== null) {
         ref.current.scrollIntoView({ behavior: "smooth" });
       }
     }
@@ -122,10 +124,10 @@ export default function Message(props) {
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        // if (!notification.includes(newMessageRecieved)) {
-        //   setNotification([newMessageRecieved, ...notification]);
-        //   setFetchAgain(!fetchAgain);
-        // }
+        if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
+          EmployeeReducer.notification.push(newMessageRecieved);
+          dispatch(notifications(EmployeeReducer.notification));
+        }
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -155,7 +157,7 @@ export default function Message(props) {
         <div className="row d-inline">
           {Object.keys(displayed).length != 0 ? (
             <>
-              {typeof props.selectedChat.isGroup !== "undefined" ? (
+              {!props.selectedChat.isGroup ? (
                 <>
                   <div className="col-lg-12">
                     <a data-toggle="modal" data-target="#view_info">
@@ -244,7 +246,7 @@ export default function Message(props) {
             ) : (
               <li key={i} className="clearfix">
                 <div className="message-data text-right">
-                <span>{EmployeeReducer.connectedEmployee.userName}</span>
+                  <span>{EmployeeReducer.connectedEmployee.userName}</span>
                   <img
                     src="https://bootdey.com/img/Content/avatar/avatar7.png"
                     alt="avatar"

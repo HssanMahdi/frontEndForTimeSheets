@@ -23,6 +23,7 @@ export default function VideoCall(props) {
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
+
   const [name, setName] = useState("");
   const [empToCall, setEmpToCall] = useState({});
   const myVideo = useRef();
@@ -71,7 +72,7 @@ export default function VideoCall(props) {
       setCallerSignal(data.signal);
     });
   }, []);
-  console.log("me",me)
+  console.log("me", me);
   //unmount
   useEffect(() => () => console.log("unmount"), []);
 
@@ -105,8 +106,12 @@ export default function VideoCall(props) {
 
   const leaveCall = () => {
     setCallEnded(true);
+
     connectionRef.current.destroy();
-    setredirectOrNo(true)
+    stream.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    setredirectOrNo(true);
   };
   // console.log("emppp", empToCall)
   return (
@@ -233,10 +238,7 @@ export default function VideoCall(props) {
           </div>
         </div>
       </div>
-      {redirectOrNo ? (
-          <Redirect to="/home/chat" />
-        ) : (null)
-        }
+      {redirectOrNo ? <Redirect to="/home/chat" /> : null}
     </main>
   );
 }
