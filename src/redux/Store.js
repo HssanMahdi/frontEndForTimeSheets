@@ -9,6 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2'
 import createTransform from 'redux-persist/es/createTransform'
 
+
 const persistConfig ={
     key : 'main-root',
     storage

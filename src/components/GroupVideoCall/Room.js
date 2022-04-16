@@ -53,10 +53,12 @@ export default function Room(props) {
   const socketRef = useRef();
   const userVideo = useRef();
   const peersRef = useRef([]);
+  const connectionRef = useRef([]);
   const [stream, setStream] = useState();
   const [redirectOrNo, setredirectOrNo] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(true);
   const [microphoneEnabled, setMicrophoneEnabled] = useState(true);
+  const [screenSharingActive, setScreenSharingActive] = useState(false);
   const roomID = props.match.params.roomID;
 
   useEffect(() => {
@@ -71,6 +73,7 @@ export default function Room(props) {
           const peers = [];
           users.forEach((userID) => {
             const peer = createPeer(userID, socketRef.current.id, stream);
+            connectionRef.current = peer;
             peersRef.current.push({
               peerID: userID,
               peer,
@@ -82,6 +85,7 @@ export default function Room(props) {
 
         socketRef.current.on("user joined", (payload) => {
           const peer = addPeer(payload.signal, payload.callerID, stream);
+          connectionRef.current = peer;
           peersRef.current.push({
             peerID: payload.callerID,
             peer,
@@ -96,6 +100,14 @@ export default function Room(props) {
         });
       });
   }, []);
+
+  // for (let [key, value] of peersRef.current) {
+  //   // peersRef.current
+  //   //   .get(key)[0]
+  //   //   .peerConnection.getSenders()[1]
+  //   console.log(peersRef.current.get(key)[0]);
+  // }
+  // peersRef.current.forEach()
 
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({

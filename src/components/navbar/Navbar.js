@@ -28,8 +28,16 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
   const myVideo = useRef();
   const [keysPressed, setKeysPressed] = useState([]);
   const [navNotifications, setNavNotifications] = useState([]);
-  const history = useHistory();
   const dispatch = useDispatch();
+  const [valueSearch, setValueSearch] = useState("");
+
+  const history = useHistory();
+  const searchGoogle = (e) => {
+    history.push({
+      pathname: "/home/search",
+      state: { valueSearch: valueSearch },
+    });
+  };
   const config = {
     headers: {
       Authorization: `Bearer ${EmployeeReducer.token}`,
@@ -74,7 +82,11 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         myVideo.current.srcObject = stream;
       });
   }
-
+  const searchGooglePress = async (event) => {
+    if (event.key === "Enter" && valueSearch) {
+      searchGoogle();
+    }
+  };
   function sweetAlert() {
     const MySwal = withReactContent(Swal);
     Swal.fire({
@@ -366,6 +378,24 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         </span>
       </div>
       <div className="navbar__right">
+      <div>
+          <div className="search-box">
+            <input
+              type="text"
+              className="search-input11 "
+              onChange={(e) => setValueSearch(e.target.value)}
+              value={valueSearch}
+              placeholder="Search Google .."
+              onKeyDown={searchGooglePress}
+            />
+
+            <i
+              style={{ color: "darkblue" }}
+              onClick={searchGoogle}
+              className="bi bi-google"
+            ></i>
+          </div>
+        </div>
         <OverlayTrigger
           trigger="click"
           rootClose

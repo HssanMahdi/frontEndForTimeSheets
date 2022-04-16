@@ -17,13 +17,65 @@ export default function Message(props) {
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [inputFiles, setInputFiles] = useState();
+  const [senderM, setSenderM] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const hiddenFileInput = useRef();
   const dispatch = useDispatch();
   const ref = useRef();
   const config = {
     headers: {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
+  };
+
+  const uploadImage = (e) => {
+    if (e !== undefined) {
+      const configM = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${EmployeeReducer.token}`,
+        },
+      };
+      const form = new FormData();
+      form.append("file", e.target.files[0]);
+      form.append("upload_preset", "onTime-app");
+      fetch("https://api.cloudinary.com/v1_1/espritt/image/upload", {
+        method: "post",
+        body: form,
+      })
+        .then((res) => res.json())
+        .then(async (result) => {
+          setNewMessage("");
+          const { data } = await axios.post(
+            "/message",
+            {
+              content: result.secure_url,
+              isFile: true,
+              chatId: props.selectedChat._id,
+            },
+            configM
+          );
+
+          socket.emit("new message", data);
+          setMessages([...messages, data]);
+
+          if (ref.current !== null) {
+            ref.current.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      e.target.value = null;
+    }
+  };
+
+  const handleClick = () => {
+    hiddenFileInput.current.click();
+  };
+
+  const handleChange = (event) => {
+    console.log("dddd");
+    const fileUploaded = event.target.files[0];
+    console.log(fileUploaded);
   };
 
   const fetchMessages = async () => {
@@ -223,9 +275,17 @@ export default function Message(props) {
                     src="https://bootdey.com/img/Content/avatar/avatar7.png"
                     alt="avatar"
                   />
-                  <span>{displayed.userName}</span>
+                  <span>{message.sender.userName}</span>
                 </div>
-                <div className="message my-message">{message.content}</div>
+                {!message.isFile ? (
+                  <div className="message my-message">{message.content}</div>
+                ) : (
+                  <div className="message my-message">
+                    {" "}
+                    <img src={message.content} alt="avatar" />
+                  </div>
+                )}
+
                 <span
                   className="message-data mx-2"
                   style={{
@@ -236,7 +296,7 @@ export default function Message(props) {
                     letterSpacing: "1px",
                   }}
                 >
-                  <Moment format="hh:mm | DD-MM-YYYY ">
+                  <Moment format="HH:MM | DD-MM-YYYY ">
                     <span className="message-data-time">
                       {message.createdAt}
                     </span>
@@ -252,9 +312,20 @@ export default function Message(props) {
                     alt="avatar"
                   />
                 </div>
-                <div className="message other-message float-right">
-                  {message.content}
-                </div>
+                {!message.isFile ? (
+                  <div className="message other-message float-right">
+                    {message.content}
+                  </div>
+                ) : (
+                  <div className="message other-message float-right">
+                    <img
+                      style={{ width: "390px" }}
+                      src={message.content}
+                      alt="avatar"
+                    />
+                  </div>
+                )}
+
                 <span
                   className="float-right my-3 mx-2 "
                   style={{
@@ -277,9 +348,32 @@ export default function Message(props) {
         </ul>
       </div>
       <div className="chat-message clearfix">
+        {istyping ? (
+          <div className="chat-bubble my-4">
+            <div className="typing">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
         {Object.keys(displayed).length != 0 ? (
           <div className="input-group mb-0" onKeyDown={sendMessage}>
-            {/* {istyping ? <div>LOADING..</div> : <></>} */}
+            <div className="input-group-prepend image-uploadss">
+              <span className="input-group-text">
+                <i className="bi bi-card-image" onClick={handleClick}></i>
+              </span>
+              <form>
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  ref={hiddenFileInput}
+                  onChange={(e) => uploadImage(e)}
+                />
+              </form>
+            </div>
             <div className="input-group-prepend">
               <span className="input-group-text">
                 <i className="fa fa-send"></i>

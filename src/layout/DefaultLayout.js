@@ -8,6 +8,7 @@ import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import "./defaultLayout.css";
 import { useHistory } from "react-router-dom";
+import { parse, stringify } from 'flatted'
 const Login = React.lazy(() =>
   import("../components/authentification/Authentification")
 );
@@ -25,6 +26,7 @@ export default function DefaultLayout() {
   const openSidebar = () => {
     setSidebarOpen(true);
   };
+  console.log(EmployeeReducer.socket)
   const closeSidebar = () => {
     setSidebarOpen(false);
   };

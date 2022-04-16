@@ -121,8 +121,7 @@ export default function Chat(props) {
                         <div className="about">
                           {search.userName}
                           <div className="status">
-                            {" "}
-                            <i className="fa fa-circle offline"></i>{" "}
+                            <i className="fa fa-circle offline"></i>
                             {search.email}
                           </div>
                         </div>
@@ -152,8 +151,14 @@ export default function Chat(props) {
                               </React.Fragment>
                             ))}
                             <div className="status">
-                              {" "}
-                              <i className="fa fa-circle offline"></i> chat{" "}
+                              {typeof chat.lastMessage !== "undefined" ? (
+                                <>
+                                  <i className="fa fa-circle offline"></i>
+                                  {chat.lastMessage.content}
+                                </>
+                              ) : (
+                                <></>
+                              )}
                             </div>
                           </div>
                         </li>
@@ -171,8 +176,12 @@ export default function Chat(props) {
                         <div className="about">
                           {chat.chatName}
                           <div className="status">
-                            {" "}
-                            <i className="fa fa-circle offline"></i> chat{" "}
+                            {typeof chat.lastMessage !== "undefined" ? (
+                              <>
+                                <i className="fa fa-circle offline"></i>
+                                {chat.lastMessage.content}
+                              </>
+                            ) : null}
                           </div>
                         </div>
                       </li>

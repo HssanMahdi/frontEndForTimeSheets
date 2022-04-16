@@ -29,6 +29,9 @@ const GroupCall = React.lazy(() => import("./components/GroupVideoCall/Room"));
 const MakeGroupCall = React.lazy(() =>
   import("./components/GroupVideoCall/CreateRoom")
 );
+const SearchGoogle = React.lazy(() =>
+  import("./components/searchGoogle/SearchGoogle")
+);
 
 const routes = [
   { path: "/", exact: true, name: "Login" },
@@ -40,6 +43,7 @@ const routes = [
   { path: "/home/FileEdit/document/:id", name: "FileEdit", component: FileEdit },
   { path: "/home/FileUpload", name: "FileUpload", component: FileUpload }, 
   { path: "/home/chat", name: "Chat", component: Chat },
+  { path: "/home/search", name: "searchG", component: SearchGoogle },
   { path: "/home/videocall", name: "videoCall", component: VideoCall },
   { path: "/home/profile", name: "profile", component: Profile },
 { path: "/Project", name: 'project', component: Project },

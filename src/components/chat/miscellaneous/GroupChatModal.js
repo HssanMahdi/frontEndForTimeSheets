@@ -12,8 +12,9 @@ export default function GroupChatModal() {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchUser, setSearchUser] = useState("");
   const [searchsResult, setSearchsResult] = useState([]);
-
-  const [searchInput, setSearchInput] = useState();
+  const [userExist, setUserExist] = useState(false);
+  const [showElement, setShowElement] = useState(true);
+  const [formValid, setFormValid] = useState();
 
   const closeRef = useRef();
   const config = {
@@ -21,6 +22,13 @@ export default function GroupChatModal() {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
   };
+  useEffect(() => {
+    setTimeout(function () {
+      setShowElement(false);
+      setFormValid(false);
+      setUserExist(false);
+    }, 3000);
+  }, [showElement]);
   const handleSearchU = async (query) => {
     setSearchUser(query);
     if (!query) {
@@ -31,32 +39,37 @@ export default function GroupChatModal() {
   };
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
-      console.log("user already exist");
-      return;
+      setUserExist(true);
+      setShowElement(true);
+    } else {
+      setUserExist(false);
+      setSelectedUsers([...selectedUsers, userToAdd]);
     }
-    setSelectedUsers([...selectedUsers, userToAdd]);
   };
   const handleDelete = (delUser) => {
     setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
   };
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
-      console.log("Please fill");
-      return;
-    }
-    const { data } = await axios.post(
-      `/chat/group`,
-      {
-        name: groupChatName,
-        employees: JSON.stringify(selectedUsers.map((u) => u._id)),
-      },
-      config
-    );
-    setGroupChatName("");
+      setFormValid(true);
+      setShowElement(true);
+    } else {
+      setFormValid(false);
+      const { data } = await axios.post(
+        `/chat/group`,
+        {
+          name: groupChatName,
+          employees: JSON.stringify(selectedUsers.map((u) => u._id)),
+        },
+        config
+      );
+      setGroupChatName("");
 
-    dispatch(ChatFetcher(config));
-    socket.emit("groupChatCreation", selectedUsers);
-    closeRef.current.click();
+      dispatch(ChatFetcher(config));
+      socket.emit("groupChatCreation", selectedUsers);
+
+      closeRef.current.click();
+    }
   };
   return (
     <div
@@ -90,7 +103,6 @@ export default function GroupChatModal() {
                   type="text"
                   className="form-control"
                   placeholder="Group Name.."
-                  value={groupChatName}
                   onChange={(e) => setGroupChatName(e.target.value)}
                 />
               </div>
@@ -137,6 +149,16 @@ export default function GroupChatModal() {
                     </div>
                   </React.Fragment>
                 ))}
+              </div>
+            ) : null}
+            {userExist && showElement ? (
+              <div className="alert alert-danger my-2" role="alert">
+                user already exist !
+              </div>
+            ) : null}
+            {formValid && showElement ? (
+              <div className="alert alert-danger my-2" role="alert">
+                Please Fill !
               </div>
             ) : null}
           </div>

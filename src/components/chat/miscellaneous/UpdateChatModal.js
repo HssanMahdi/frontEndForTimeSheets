@@ -8,9 +8,14 @@ export default function UpdateChatModal(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [groupChatName, setGroupChatName] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const [showElement, setShowElement] = useState(true);
   const [searchUpd, setSearchUpd] = useState("");
   const [searchResultU, setSearchResultU] = useState([]);
   const [selectedChat, setSelectedChat] = useState({});
+  const [inputName, setInputName] = useState(false);
+  const [userExist, setUserExist] = useState(false);
   const closeRef = useRef();
   useEffect(() => {
     setSelectedChat(props.selectedChat);
@@ -22,6 +27,13 @@ export default function UpdateChatModal(props) {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
   };
+  useEffect(() => {
+    setTimeout(function () {
+      setShowElement(false);
+      setIsAdmin(false);
+      setUserExist(false);
+    }, 3000);
+  }, [showElement]);
   const handleSearchU = async (query) => {
     setSearchUpd(query);
     if (!query) {
@@ -31,22 +43,27 @@ export default function UpdateChatModal(props) {
     setSearchResultU(data);
   };
   const handleRename = async () => {
-    if (!groupChatName) return;
-
-    const { data } = await axios.put(
-      `/chat/rename`,
-      {
-        chatId: selectedChat._id,
-        chatName: groupChatName,
-      },
-      config
-    );
-    setSelectedChat(data);
-    setGroupChatName("");
-    dispatch(ChatFetcher(config));
+    if (!groupChatName) {
+      setInputName(true);
+      setShowElement(true);
+    } else {
+      const { data } = await axios.put(
+        `/chat/rename`,
+        {
+          chatId: selectedChat._id,
+          chatName: groupChatName,
+        },
+        config
+      );
+      setSelectedChat(data);
+      setGroupChatName("");
+      dispatch(ChatFetcher(config));
+    }
   };
   const handleAddUser = async (user1) => {
     if (selectedChat.employees.find((u) => u._id === user1._id)) {
+      setUserExist(true);
+      setShowElement(true);
       return;
     }
     if (selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id) {
@@ -65,13 +82,31 @@ export default function UpdateChatModal(props) {
     setGroupChatName("");
   };
   const handleRemove = async (user1) => {
-    if (
-      selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id &&
-      user1._id !== EmployeeReducer.connectedEmployee._id
-    ) {
+    if (selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id) {
+      console.log("mehouch adminn");
+      setIsAdmin(true);
+      setShowElement(true);
       return;
-    }
+    } else {
+      setIsAdmin(false);
+      if (user1._id !== EmployeeReducer.connectedEmployee._id) {
+        console.log("mechya f s7i7");
+        const { data } = await axios.put(
+          `/chat/groupremove`,
+          {
+            chatId: selectedChat._id,
+            employeeId: user1._id,
+          },
+          config
+        );
 
+        setSelectedChat(data);
+
+        setGroupChatName("");
+      }
+    }
+  };
+  const leaveGroup = async (user1) => {
     const { data } = await axios.put(
       `/chat/groupremove`,
       {
@@ -81,13 +116,9 @@ export default function UpdateChatModal(props) {
       config
     );
 
-    if (user1._id === EmployeeReducer.connectedEmployee._id) {
-      setSelectedChat();
-      dispatch(ChatFetcher(config));
-      closeRef.current.click();
-    } else {
-      setSelectedChat(data);
-    }
+    setSelectedChat();
+    dispatch(ChatFetcher(config));
+    closeRef.current.click();
 
     setGroupChatName("");
   };
@@ -110,8 +141,18 @@ export default function UpdateChatModal(props) {
           <div id="modalId" className="modal-body ">
             <form className="my-4">
               <div className="form-group mb-4">
-                <div className="form-row align-items-center ">
-                  <div className="col-10">
+                <div className="align-items-center ">
+                  <div className=" input-group mt-4 mx-2">
+                    <div className=" input-group-prepend">
+                      <span className="input-group-text" id="inputGroupPrepend">
+                        <Link to={"/home/chat"}>
+                          <i
+                            className="bi bi-check-square"
+                            onClick={handleRename}
+                          ></i>
+                        </Link>
+                      </span>
+                    </div>
                     <input
                       type="text"
                       className="form-control"
@@ -120,16 +161,14 @@ export default function UpdateChatModal(props) {
                       onChange={(e) => setGroupChatName(e.target.value)}
                     />
                   </div>
-                  <div className="col-2">
-                    <Link to={"/home/chat"}>
-                      <button
-                        onClick={handleRename}
-                        className="btn btn-primary "
-                      >
-                        <i className="bi bi-check-square"></i>
-                      </button>
-                    </Link>
-                  </div>
+                  {inputName && showElement ? (
+                    <div
+                      className="alert alert-danger mx-2 my-2 text-center "
+                      role="alert"
+                    >
+                      Please Enter Name! !
+                    </div>
+                  ) : null}
                   <div className=" input-group mt-4 mx-2">
                     <div className=" input-group-prepend">
                       <span className="input-group-text" id="inputGroupPrepend">
@@ -147,7 +186,7 @@ export default function UpdateChatModal(props) {
               </div>
             </form>
 
-            <div className="d-flex">
+            <div className="d-flex flex-wrap">
               {selectedChat
                 ? selectedChat.employees?.map((u, idUs) => (
                     <React.Fragment key={idUs}>
@@ -162,8 +201,39 @@ export default function UpdateChatModal(props) {
                   ))
                 : null}
             </div>
+            {isAdmin && showElement ? (
+              <div className="alert alert-danger my-2 text-center" role="alert">
+                Only admin can remove members! !
+              </div>
+            ) : null}
           </div>
           {searchUpd ? (
+            <div
+              style={{ margin: "10px" }}
+              className="list-group first-init-reply"
+            >
+              {searchResultU?.map((seach, iSeach) => (
+                <div key={iSeach} onClick={() => handleAddUser(seach)}>
+                  <a className="list-group-item " style={{ height: "61px" }}>
+                    <img
+                      src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                      id="img-search"
+                    />
+                    <span className="mx-3" style={{ float: "left" }}>
+                      {" "}
+                      {seach.userName}
+                    </span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {userExist && showElement ? (
+            <div className="alert alert-danger my-2 text-center" role="alert">
+              User already exist! !
+            </div>
+          ) : null}
+          {/* {searchUpd ? (
             <div className="container-fluid list-group first-init-reply ">
               {searchResultU?.map((seach, iSeach) => (
                 <div
@@ -175,22 +245,23 @@ export default function UpdateChatModal(props) {
                   <a
                     id="idLIST"
                     className="list-group-item "
-                    style={{ width: "420px" }}
+                    style={{ maxWidth: "473px", width: "460px" }}
                   >
                     <img
                       src="https://bootdey.com/img/Content/avatar/avatar1.png"
                       id="img-search"
                     />
-                    {seach.userName}
+                    <span className="mx-3"> {seach.userName}</span>
                   </a>
                 </div>
               ))}
             </div>
-          ) : null}
+          ) : null} */}
+
           <div className="modal-footer">
             <Link to={"/home/chat"}>
               <button
-                onClick={() => handleRemove(EmployeeReducer.connectedEmployee)}
+                onClick={() => leaveGroup(EmployeeReducer.connectedEmployee)}
                 type="button"
                 className="btn btn-danger"
               >
