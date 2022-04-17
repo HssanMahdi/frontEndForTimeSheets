@@ -26,7 +26,6 @@ export default function DefaultLayout() {
   const openSidebar = () => {
     setSidebarOpen(true);
   };
-  console.log(EmployeeReducer.socket)
   const closeSidebar = () => {
     setSidebarOpen(false);
   };

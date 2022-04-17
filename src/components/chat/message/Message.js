@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import { useHistory } from "react-router-dom";
 import UpdateChatModal from "../miscellaneous/UpdateChatModal";
 import Moment from "react-moment";
-import { notifications } from "../../../redux/actions/EmployeeActions";
+import { ChatFetcher, notifications } from "../../../redux/actions/EmployeeActions";
 // const socket = io.connect("http://localhost:3001");
 var socket, selectedChatCompare;
 
@@ -17,6 +17,7 @@ export default function Message(props) {
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [selectedChat, setSelectedChat] = useState({});
   const [inputFiles, setInputFiles] = useState();
   const [senderM, setSenderM] = useState(false);
   const [istyping, setIsTyping] = useState(false);
@@ -52,7 +53,7 @@ export default function Message(props) {
             {
               content: result.secure_url,
               isFile: true,
-              chatId: props.selectedChat._id,
+              chatId: selectedChat._id,
             },
             configM
           );
@@ -68,20 +69,22 @@ export default function Message(props) {
     }
   };
 
+  useEffect(() => {
+    setSelectedChat(EmployeeReducer.selectedChat);
+    fetchMessages();
+    displayedChanger();
+    selectedChatCompare = selectedChat;
+  }, [EmployeeReducer.selectedChat]);
+
   const handleClick = () => {
     hiddenFileInput.current.click();
   };
 
-  const handleChange = (event) => {
-    console.log("dddd");
-    const fileUploaded = event.target.files[0];
-    console.log(fileUploaded);
-  };
 
   const fetchMessages = async () => {
-    if (Object.entries(props.selectedChat).length !== 0) {
+    if (Object.entries(selectedChat).length !== 0) {
       const { data } = await axios.get(
-        `/message/${props.selectedChat._id}`,
+        `/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -89,16 +92,16 @@ export default function Message(props) {
       if (ref.current !== null) {
         ref.current.scrollIntoView({ behavior: "smooth" });
       }
-      socket.emit("join chat", props.selectedChat._id);
+      socket.emit("join chat", selectedChat._id);
     }
   };
   function displayedChanger() {
-    setDisplayed(props.selectedChat);
+    setDisplayed(selectedChat);
 
-    if (props.selectedChat.isGroup) {
-      setDisplayed(props.selectedChat.chatName);
+    if (selectedChat.isGroup) {
+      setDisplayed(selectedChat.chatName);
     } else {
-      props.selectedChat.employees?.map((employee) => {
+      selectedChat.employees?.map((employee) => {
         if (employee._id != EmployeeReducer.connectedEmployee._id) {
           setDisplayed(employee);
         }
@@ -108,7 +111,7 @@ export default function Message(props) {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", props.selectedChat._id);
+      socket.emit("stop typing", selectedChat._id);
       const configM = {
         headers: {
           "Content-type": "application/json",
@@ -120,14 +123,13 @@ export default function Message(props) {
         "/message",
         {
           content: newMessage,
-          chatId: props.selectedChat._id,
+          chatId: selectedChat._id,
         },
         configM
       );
-
       socket.emit("new message", data);
       setMessages([...messages, data]);
-
+      dispatch(ChatFetcher(config));
       if (ref.current !== null) {
         ref.current.scrollIntoView({ behavior: "smooth" });
       }
@@ -146,8 +148,8 @@ export default function Message(props) {
   useEffect(() => {
     fetchMessages();
     displayedChanger();
-    selectedChatCompare = props.selectedChat;
-  }, [props.selectedChat._id]);
+    selectedChatCompare = selectedChat;
+  }, [selectedChat._id]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -156,7 +158,7 @@ export default function Message(props) {
 
     if (!typing) {
       setTyping(true);
-      socket.emit("typing", props.selectedChat._id);
+      socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
@@ -164,7 +166,7 @@ export default function Message(props) {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", props.selectedChat._id);
+        socket.emit("stop typing", selectedChat._id);
         setTyping(false);
       }
     }, timerLength);
@@ -193,7 +195,7 @@ export default function Message(props) {
     return false;
   };
   function callThisPerson() {
-    props.selectedChat.employees?.map((employee) => {
+    selectedChat.employees?.map((employee) => {
       if (employee._id != EmployeeReducer.connectedEmployee._id) {
         history.push({
           pathname: "/home/videocall",
@@ -205,11 +207,13 @@ export default function Message(props) {
 
   return (
     <>
+    {typeof selectedChat !== "undefined" ? (
+      <>
       <div className="chat-header clearfix">
         <div className="row d-inline">
           {Object.keys(displayed).length != 0 ? (
             <>
-              {!props.selectedChat.isGroup ? (
+              {!selectedChat.isGroup ? (
                 <>
                   <div className="col-lg-12">
                     <a data-toggle="modal" data-target="#view_info">
@@ -239,7 +243,7 @@ export default function Message(props) {
                       <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
                     </a>
                     <div className="chat-about">
-                      <h6 className="m-b-0">{props.selectedChat.chatName}</h6>
+                      <h6 className="m-b-0">{selectedChat.chatName}</h6>
                     </div>
                   </div>
 
@@ -251,9 +255,9 @@ export default function Message(props) {
                     >
                       <i className="fa fa-cogs"></i>
                     </a>
-                    {typeof props.selectedChat !== "undefined" ? (
+                    {typeof selectedChat !== "undefined" ? (
                       <UpdateChatModal
-                        selectedChat={props.selectedChat}
+                        selectedChat={selectedChat}
                       ></UpdateChatModal>
                     ) : null}
                   </div>
@@ -389,6 +393,7 @@ export default function Message(props) {
           </div>
         ) : null}
       </div>
+      </>):null}
     </>
   );
 }

@@ -3,7 +3,7 @@ import "./Chat.css";
 import hello from "../../assets/chat.svg";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { CompanWorkers } from "../../redux/actions/EmployeeActions";
+import { ChangeSelectedChat, CompanWorkers } from "../../redux/actions/EmployeeActions";
 import Message from "./message/Message";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatFetcher } from "../../redux/actions/EmployeeActions";
@@ -29,7 +29,9 @@ export default function Chat(props) {
     const { data } = await axios.get(`/employee?search=${search}`, config);
     setSearchResult(data);
   };
-
+  // useEffect(()=>{
+  //   dispatch(ChatFetcher(config));
+  // },[EmployeeReducer.chats])
   const accessChat = async () => {
     let employeeToCheckChat = {
       employeeId: selectedSearchedEmployee._id,
@@ -68,6 +70,10 @@ export default function Chat(props) {
     }
   }, [selectedSearchedEmployee]);
 
+  function changeSelectedChat1(chat){
+    setSelectedChat(chat);
+    dispatch(ChangeSelectedChat(chat));
+  }
   return (
     <main>
       <div className="main__container">
@@ -138,7 +144,7 @@ export default function Chat(props) {
                       <React.Fragment key={chat._id}>
                         <li
                           className="clearfix"
-                          onClick={() => setSelectedChat(chat)}
+                          onClick={() => changeSelectedChat1(chat)}
                         >
                           <img
                             src="https://bootdey.com/img/Content/avatar/avatar1.png"
@@ -167,7 +173,7 @@ export default function Chat(props) {
                       <li
                         key={chat._id}
                         className="clearfix"
-                        onClick={() => setSelectedChat(chat)}
+                        onClick={() => changeSelectedChat1(chat)}
                       >
                         <img
                           src="https://bootdey.com/img/Content/avatar/avatar1.png"

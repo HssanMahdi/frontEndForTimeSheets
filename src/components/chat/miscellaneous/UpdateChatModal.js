@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ChatFetcher } from "../../../redux/actions/EmployeeActions";
+import { ChangeSelectedChat, ChatFetcher } from "../../../redux/actions/EmployeeActions";
 
 export default function UpdateChatModal(props) {
   const { EmployeeReducer } = useSelector((state) => state);
@@ -56,6 +56,7 @@ export default function UpdateChatModal(props) {
         config
       );
       setSelectedChat(data);
+      dispatch(ChangeSelectedChat(data))
       setGroupChatName("");
       dispatch(ChatFetcher(config));
     }
@@ -117,6 +118,7 @@ export default function UpdateChatModal(props) {
     );
 
     setSelectedChat();
+    // dispatch(ChangeSelectedChat())
     dispatch(ChatFetcher(config));
     closeRef.current.click();
 
