@@ -15,7 +15,6 @@ export const CompanWorkers = (config) => (dispatch) => {
 };
 
 export const Login = (employeeLogin) => async (dispatch) => {
-  // let hour = d.getHours();
   await axios
     .post("/employee/login", employeeLogin)
     .then((result) => {

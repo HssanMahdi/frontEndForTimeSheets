@@ -4,13 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Login, SignUp } from "../../redux/actions/EmployeeActions";
+import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import * as faceapi from "@vladmandic/face-api";
 
 export default function Authentification() {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const history = useHistory();
   const [connected, setConnected] = useState(false);
+  const [redirectToFaceId, setRedirectToFaceId] = useState(false);
   const [employeeSignUp, setEmployeeSignUp] = useState({
     userName: "",
     email: "",
@@ -46,6 +49,14 @@ export default function Authentification() {
       history.push("/home");
     }
   }, [EmployeeReducer]);
+  useEffect(()=>{
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/model"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/model"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/model"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/model")
+    ])
+  },[])
 
   return (
     <div className="section-g img-back">
@@ -97,6 +108,10 @@ export default function Authentification() {
                         ) : null}
                         <button className="btn-a mt-4" onClick={login}>
                           submit
+                        </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button className="btn-a mt-4" onClick={()=>setRedirectToFaceId(true)}>
+                          face id
                         </button>
                         <p className="mb-0 mt-4 text-center">
                           <Link to={"/forgetpassword"}>Forgot your password?</Link>
@@ -179,6 +194,14 @@ export default function Authentification() {
           </div>
         </div>
       </div>
+      {redirectToFaceId ? (<
+        Redirect to={{
+          pathname:"/faceid",
+          state:{email : employeeLogin.email}
+        }}
+         />
+      ) : null
+      }
     </div>
   );
 }

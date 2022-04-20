@@ -59,14 +59,16 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       const { key } = event;
       keysPressed.push(key);
     });
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/model"),
-      faceapi.nets.faceLandmark68Net.loadFromUri("/model"),
-      faceapi.nets.faceRecognitionNet.loadFromUri("/model"),
-      faceapi.nets.faceExpressionNet.loadFromUri("/model"),
-    ])
-      .then(checkVideo(), handleVideo())
-      .catch((err) => console.log("err : ", err));
+    // Promise.all([
+    //   faceapi.nets.tinyFaceDetector.loadFromUri("/model"),
+    //   faceapi.nets.faceLandmark68Net.loadFromUri("/model"),
+    //   faceapi.nets.faceRecognitionNet.loadFromUri("/model"),
+    //   faceapi.nets.faceExpressionNet.loadFromUri("/model")
+    // ])
+    //   .then(checkVideo(), handleVideo())
+    //   .catch((err) => console.log("err : ", err));
+    checkVideo();
+    handleVideo();
   }, []);
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
 
   function checkVideo() {
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: true, audio: false })
       .then((stream) => {
         setStream(stream);
         myVideo.current.srcObject = stream;
@@ -113,7 +115,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence));
       }
       console.log("EmployeeReducer.checkPresence : ",EmployeeReducer.checkPresence)
-    }, 900000); //900000 every 15 mins
+    }, 1000); //900000 every 15 mins
   };
   
   function Item(props) {
@@ -371,8 +373,9 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             playsInline
             muted
             ref={myVideo}
-            width={"70"}
+            width={"70"}           
             height={"35"}
+            style={{ visibility: "hidden" }}
             autoPlay
           />
         </span>

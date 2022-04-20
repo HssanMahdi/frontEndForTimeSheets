@@ -27,6 +27,9 @@ export default function App() {
   const VideoChat = React.lazy(() =>
     import("./components/videoCall/VideoCall")
   );
+  const FaceId = React.lazy(() =>
+    import("./components/authentification/faceId/faceId")
+  );
   const Test = React.lazy(() => import("./components/test/Test"));
   return (
     <BrowserRouter>
@@ -37,6 +40,12 @@ export default function App() {
             path="/"
             name="Login"
             render={(props) => <Login {...props} />}
+          />
+          <Route
+            exact
+            path="/faceid"
+            name="faceid"
+            render={(props) => <FaceId {...props} />}
           />
           <Route
             exact

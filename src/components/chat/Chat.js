@@ -37,6 +37,8 @@ export default function Chat(props) {
       employeeId: selectedSearchedEmployee._id,
     };
     const { data } = await axios.post("/chat", employeeToCheckChat, config);
+    dispatch(ChangeSelectedChat(data));
+    fetchChats();
     setSelectedChat(data);
   };
   function Check(props) {
