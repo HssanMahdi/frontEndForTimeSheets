@@ -115,7 +115,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence));
       }
       console.log("EmployeeReducer.checkPresence : ",EmployeeReducer.checkPresence)
-    }, 1000); //900000 every 15 mins
+    }, 900000); //900000 every 15 mins
   };
   
   function Item(props) {
