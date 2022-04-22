@@ -8,7 +8,7 @@ export default function GroupChatModal() {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const socket = EmployeeReducer.socket;
-  const [groupChatName, setGroupChatName] = useState();
+  const [groupChatName, setGroupChatName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchUser, setSearchUser] = useState("");
   const [searchsResult, setSearchsResult] = useState([]);
@@ -64,7 +64,8 @@ export default function GroupChatModal() {
         config
       );
       setGroupChatName("");
-
+      setSearchUser("");
+      setSelectedUsers([]);
       dispatch(ChatFetcher(config));
       socket.emit("groupChatCreation", selectedUsers);
 
@@ -103,6 +104,7 @@ export default function GroupChatModal() {
                   type="text"
                   className="form-control"
                   placeholder="Group Name.."
+                  value={groupChatName}
                   onChange={(e) => setGroupChatName(e.target.value)}
                 />
               </div>
@@ -117,6 +119,7 @@ export default function GroupChatModal() {
                   type="email"
                   className="form-control"
                   placeholder="name@example.com"
+                  value={searchUser}
                   onChange={(e) => handleSearchU(e.target.value)}
                 />
               </div>

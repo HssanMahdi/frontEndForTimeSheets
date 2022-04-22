@@ -3,7 +3,10 @@ import "./Chat.css";
 import hello from "../../assets/chat.svg";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { ChangeSelectedChat, CompanWorkers } from "../../redux/actions/EmployeeActions";
+import {
+  ChangeSelectedChat,
+  CompanWorkers,
+} from "../../redux/actions/EmployeeActions";
 import Message from "./message/Message";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatFetcher } from "../../redux/actions/EmployeeActions";
@@ -47,6 +50,7 @@ export default function Chat(props) {
     }
     return <></>;
   }
+  useEffect(() => () => dispatch(ChangeSelectedChat()), []);
   useEffect(() => {
     dispatch(CompanWorkers(config));
     fetchChats();
@@ -72,7 +76,7 @@ export default function Chat(props) {
     }
   }, [selectedSearchedEmployee]);
 
-  function changeSelectedChat1(chat){
+  function changeSelectedChat1(chat) {
     setSelectedChat(chat);
     dispatch(ChangeSelectedChat(chat));
   }
@@ -100,7 +104,7 @@ export default function Chat(props) {
         </div>
         <div className="row clearfix my-3">
           <div className="col-lg-12">
-            <div className="card chat-app">
+            <div className="cardCHAT chat-app">
               <div id="plist" className="people-list">
                 <div className="input-group">
                   <div className="input-group-prepend">
@@ -123,7 +127,10 @@ export default function Chat(props) {
                       <li
                         key={i}
                         className="clearfix"
-                        onClick={() => setSelectedSearchedEmployee(search)}
+                        onClick={() => {
+                          setSelectedSearchedEmployee(search);
+                          setSearch("");
+                        }}
                       >
                         <img src={search.images} alt="avatar" />
                         <div className="about">
@@ -159,7 +166,8 @@ export default function Chat(props) {
                               </React.Fragment>
                             ))}
                             <div className="status">
-                              {typeof chat.lastMessage !== "undefined" ? (
+                              {typeof chat.lastMessage !== "undefined" &&
+                              chat.lastMessage !== null ? (
                                 <>
                                   <i className="fa fa-circle offline"></i>
                                   {chat.lastMessage.content}
@@ -184,7 +192,8 @@ export default function Chat(props) {
                         <div className="about">
                           {chat.chatName}
                           <div className="status">
-                            {typeof chat.lastMessage !== "undefined" ? (
+                            {typeof chat.lastMessage !== "undefined" &&
+                            chat.lastMessage !== null ? (
                               <>
                                 <i className="fa fa-circle offline"></i>
                                 {chat.lastMessage.content}

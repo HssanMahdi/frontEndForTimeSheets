@@ -3,26 +3,31 @@ import AppContent from "../components/AppContent";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import "./defaultLayout.css";
 import { useHistory } from "react-router-dom";
-import { parse, stringify } from 'flatted'
+import { parse, stringify } from 'flatted';
+import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
+import { notifications } from "../redux/actions/EmployeeActions";
+const socket = io.connect("http://localhost:3001");
+
 const Login = React.lazy(() =>
   import("../components/authentification/Authentification")
 );
+var selectedChatCompare;
 export default function DefaultLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [redirectOrNot, setRedirectOrNot] = useState(false);
   const [redirectToVideo, setRedirectToVideo] = useState(false);
   const { EmployeeReducer } = useSelector((state) => state);
-  const socket = EmployeeReducer.socket;
   const history = useHistory();
   const [caller, setCaller] = useState("");
   const [receivingCall, setReceivingCall] = useState(false);
   const [callerSignal, setCallerSignal] = useState();
   const [name, setName] = useState("");
+  const dispatch = useDispatch();
   const openSidebar = () => {
     setSidebarOpen(true);
   };
@@ -34,15 +39,15 @@ export default function DefaultLayout() {
       setRedirectOrNot(true)
     }
   }, []);
-  if (socket) {
-    socket.on("callUser", (data) => {
-      setReceivingCall(true);
-      setCaller(data.from);
-      // setName(data.name);
-      setName(data.name);
-      setCallerSignal(data.signal);
-    });
-  }
+  // if (socket) {
+  //   socket.on("callUser", (data) => {
+  //     setReceivingCall(true);
+  //     setCaller(data.from);
+  //     // setName(data.name);
+  //     setName(data.name);
+  //     setCallerSignal(data.signal);
+  //   });
+  // }
   const answerCall = () => {
     setReceivingCall(false)
     setRedirectToVideo(true)
@@ -50,6 +55,33 @@ export default function DefaultLayout() {
   const declineCall = () => {
     setReceivingCall(false)
   };
+  useEffect(() => {
+    console.log("mountit")
+    setTimeout(() => {
+      socket.emit("persistIdEmployee", {
+        me: socket.id,
+        name: EmployeeReducer.connectedEmployee.userName,
+        id: EmployeeReducer.connectedEmployee._id,
+      });
+    }, 2000);
+  }, []);
+  useEffect(() => {
+    selectedChatCompare = EmployeeReducer.selectedChat;
+  }, [EmployeeReducer.selectedChat]);
+  socket.on("message recieved", (newMessageRecieved) => {
+    let notifs
+    if (
+      !selectedChatCompare || 
+      selectedChatCompare._id !== newMessageRecieved.chat._id
+    ) {
+      if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
+        notifs = EmployeeReducer.notification
+        console.log(notifs)
+        notifs.push(newMessageRecieved)
+        dispatch(notifications(notifs));
+      }
+    }
+  });
   return (
     <Router>
       <Suspense fallback={<div>LOADING...</div>}>
@@ -73,7 +105,7 @@ export default function DefaultLayout() {
         <Redirect
           to={{
             pathname: "/home/videocall",
-            state: { callerSignal: callerSignal , caller: caller }
+            state: { callerSignal: callerSignal, caller: caller }
           }}
         />
       ) : null

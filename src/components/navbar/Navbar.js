@@ -23,6 +23,7 @@ import Message from "../chat/message/Message";
 export default function Navbar({ sidebarOpen, openSidebar }) {
   const { EmployeeReducer } = useSelector((state) => state);
   const [redirectOrNo, setredirectOrNo] = useState(false);
+  const [redirectToChat, setRedirectToChat] = useState(false);
   const [link, setLink] = useState("");
   const [stream, setStream] = useState();
   const myVideo = useRef();
@@ -131,6 +132,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
               notifications(navNotifications.filter((n) => n !== props.props))
             );
             dispatch(ChangeSelectedChat(props.props.chat));
+            history.push('/home/chat')
           }}
         >
           New message in group chat {props.props.chat.chatName}
@@ -148,6 +150,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             notifications(navNotifications.filter((n) => n !== props.props))
           );
           dispatch(ChangeSelectedChat(props.props.chat));
+          history.push('/home/chat')
         }}
       >
         New message in chat with {props.props.sender.userName}
@@ -246,7 +249,6 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
-
   const popover = (
     <Popover id="popover-basic" style={{ borderRadius: 19, marginRight: 30 }}>
       <Popover.Header
@@ -434,6 +436,10 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             </a>
           </OverlayTrigger>
         )}
+        {redirectToChat ?(
+          <Redirect to="/home/chat" />
+        ):null
+        }
       </div>
     </nav>
   );

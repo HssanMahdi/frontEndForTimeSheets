@@ -5,7 +5,14 @@ import io from "socket.io-client";
 import { useHistory } from "react-router-dom";
 import UpdateChatModal from "../miscellaneous/UpdateChatModal";
 import Moment from "react-moment";
-import { ChatFetcher, notifications } from "../../../redux/actions/EmployeeActions";
+import { v1 as uuid } from "uuid";
+import Picker from "emoji-picker-react";
+
+import { BsEmojiSmileFill } from "react-icons/bs";
+import {
+  ChatFetcher,
+  notifications,
+} from "../../../redux/actions/EmployeeActions";
 // const socket = io.connect("http://localhost:3001");
 var socket, selectedChatCompare;
 
@@ -18,9 +25,8 @@ export default function Message(props) {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
-  const [inputFiles, setInputFiles] = useState();
-  const [senderM, setSenderM] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const hiddenFileInput = useRef();
   const dispatch = useDispatch();
   const ref = useRef();
@@ -28,6 +34,14 @@ export default function Message(props) {
     headers: {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
+  };
+  const handleEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+  const handleEmojiClick = (event, emoji) => {
+    let message = newMessage;
+    message += emoji.emoji;
+    setNewMessage(message);
   };
 
   const uploadImage = (e) => {
@@ -61,18 +75,24 @@ export default function Message(props) {
           socket.emit("new message", data);
           setMessages([...messages, data]);
 
-          if (ref.current !== null) {
-            ref.current.scrollIntoView({ behavior: "smooth" });
-          }
+          // if (ref.current !== null) {
+          //   ref?.current.scrollIntoView({ behavior: "smooth" });
+          // }
         });
       e.target.value = null;
     }
   };
 
   useEffect(() => {
+    ref?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
     setSelectedChat(EmployeeReducer.selectedChat);
     fetchMessages();
     displayedChanger();
+    setNewMessage("");
+    setIsTyping(false);
     selectedChatCompare = selectedChat;
   }, [EmployeeReducer.selectedChat]);
 
@@ -80,34 +100,61 @@ export default function Message(props) {
     hiddenFileInput.current.click();
   };
 
-
   const fetchMessages = async () => {
-    if (Object.entries(selectedChat).length !== 0) {
-      const { data } = await axios.get(
-        `/message/${selectedChat._id}`,
-        config
-      );
-      setMessages(data);
+    if (typeof selectedChat !== "undefined") {
+      if (Object.entries(selectedChat).length !== 0) {
+        const { data } = await axios.get(
+          `/message/${selectedChat._id}`,
+          config
+        );
+        setMessages(data);
 
-      if (ref.current !== null) {
-        ref.current.scrollIntoView({ behavior: "smooth" });
+        // if (ref.current !== null) {
+        //   ref.current.scrollIntoView({ behavior: "smooth" });
+        // }
+        socket.emit("join chat", selectedChat._id);
       }
-      socket.emit("join chat", selectedChat._id);
     }
   };
   function displayedChanger() {
-    setDisplayed(selectedChat);
+    if (typeof selectedChat !== "undefined") {
+      setDisplayed(selectedChat);
 
-    if (selectedChat.isGroup) {
-      setDisplayed(selectedChat.chatName);
-    } else {
-      selectedChat.employees?.map((employee) => {
-        if (employee._id != EmployeeReducer.connectedEmployee._id) {
-          setDisplayed(employee);
-        }
-      });
+      if (selectedChat.isGroup) {
+        setDisplayed(selectedChat.chatName);
+      } else {
+        selectedChat.employees?.map((employee) => {
+          if (employee._id != EmployeeReducer.connectedEmployee._id) {
+            setDisplayed(employee);
+          }
+        });
+      }
     }
   }
+  const create = async () => {
+    const configM = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${EmployeeReducer.token}`,
+      },
+    };
+    const id = uuid();
+    setNewMessage("");
+    const { data } = await axios.post(
+      "/message",
+      {
+        content: `http://localhost:3000/home/makecall/${id}`,
+
+        chatId: selectedChat._id,
+      },
+      configM
+    );
+
+    socket.emit("new message", data);
+    setMessages([...messages, data]);
+
+    history.push(`/home/makecall/${id}`);
+  };
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
@@ -148,9 +195,12 @@ export default function Message(props) {
   useEffect(() => {
     fetchMessages();
     displayedChanger();
+    setIsTyping(false);
     selectedChatCompare = selectedChat;
-  }, [selectedChat._id]);
-
+    const ac = new AbortController();
+    return () => ac.abort();
+  }, [selectedChat]);
+  // selectedChat._id;
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
@@ -177,11 +227,11 @@ export default function Message(props) {
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
-      ) {
-        if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
-          EmployeeReducer.notification.push(newMessageRecieved);
-          dispatch(notifications(EmployeeReducer.notification));
-        }
+      ) {return
+        // if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
+        //   EmployeeReducer.notification.push(newMessageRecieved);
+        //   dispatch(notifications(EmployeeReducer.notification));
+        // }
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -207,193 +257,242 @@ export default function Message(props) {
 
   return (
     <>
-    {typeof selectedChat !== "undefined" ? (
-      <>
-      <div className="chat-header clearfix">
-        <div className="row d-inline">
-          {Object.keys(displayed).length != 0 ? (
-            <>
-              {!selectedChat.isGroup ? (
+      {typeof selectedChat !== "undefined" ? (
+        <>
+          <div className="chat-header clearfix">
+            <div className="row d-inline">
+              {Object.keys(displayed).length != 0 ? (
                 <>
-                  <div className="col-lg-12">
-                    <a data-toggle="modal" data-target="#view_info">
-                      <img src={displayed.images} alt="avatar" />
-                    </a>
-                    <div className="chat-about">
-                      <h6 className="m-b-0">{displayed.userName}</h6>
-                    </div>
-                  </div>
-                  <div className="col-lg-12 hidden-sm text-right">
-                    <a
-                      className="btn btn-outline-info"
-                      onClick={callThisPerson}
-                      style={{ color: "black" }}
-                    >
-                      <i
-                        style={{ color: "#3692a1" }}
-                        className="bi bi-camera-video-fill"
-                      ></i>
-                    </a>
-                  </div>
+                  {!selectedChat.isGroup ? (
+                    <>
+                      <div className="col-lg-12">
+                        <a data-toggle="modal" data-target="#view_info">
+                          <img src={displayed.images} alt="avatar" />
+                        </a>
+                        <div className="chat-about">
+                          <h6 className="m-b-0">{displayed.userName}</h6>
+                        </div>
+                      </div>
+                      <div className="col-lg-12 hidden-sm text-right">
+                        <a
+                          className="btn btn-outline-info"
+                          onClick={callThisPerson}
+                          style={{ color: "black" }}
+                        >
+                          <i
+                            style={{ color: "#3692a1" }}
+                            className="bi bi-camera-video-fill"
+                          ></i>
+                        </a>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="col-lg-12">
+                        <a data-toggle="modal" data-target="#view_info">
+                          <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
+                        </a>
+                        <div className="chat-about">
+                          <h6 className="m-b-0">{selectedChat.chatName}</h6>
+                        </div>
+                      </div>
+
+                      <div className="col-lg-12 hidden-sm text-right">
+                        <a
+                          className="btn btn-outline-info mx-2"
+                          onClick={create}
+                          style={{ color: "black" }}
+                        >
+                          <i
+                            style={{ color: "#3692a1" }}
+                            className="bi bi-camera-video-fill"
+                          ></i>
+                        </a>
+                        <a
+                          data-toggle="modal"
+                          data-target="#updateModal"
+                          className="btn btn-outline-info"
+                        >
+                          <i className="fa fa-cogs"></i>
+                        </a>
+                        {typeof selectedChat !== "undefined" ? (
+                          <UpdateChatModal
+                            selectedChat={selectedChat}
+                          ></UpdateChatModal>
+                        ) : null}
+                      </div>
+                    </>
+                  )}
                 </>
               ) : (
-                <>
-                  <div className="col-lg-12">
-                    <a data-toggle="modal" data-target="#view_info">
-                      <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
-                    </a>
-                    <div className="chat-about">
-                      <h6 className="m-b-0">{selectedChat.chatName}</h6>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-12 hidden-sm text-right">
-                    <a
-                      data-toggle="modal"
-                      data-target="#updateModal"
-                      className="btn btn-outline-info"
-                    >
-                      <i className="fa fa-cogs"></i>
-                    </a>
-                    {typeof selectedChat !== "undefined" ? (
-                      <UpdateChatModal
-                        selectedChat={selectedChat}
-                      ></UpdateChatModal>
-                    ) : null}
-                  </div>
-                </>
+                <h4 className="h4-class ">Please Select User</h4>
               )}
-            </>
-          ) : (
-            <h4 className="h4-class ">Please Select User</h4>
-          )}
-        </div>
-      </div>
-      <div className="chat-history  ">
-        <ul className="m-b-0">
-          {messages?.map((message, i) =>
-            !getSender(message) ? (
-              <li key={i} className="clearfix" ref={ref}>
-                <div className="message-data text-left">
-                  <img
-                    src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                    alt="avatar"
-                  />
-                  <span>{message.sender.userName}</span>
-                </div>
-                {!message.isFile ? (
-                  <div className="message my-message">{message.content}</div>
-                ) : (
-                  <div className="message my-message">
-                    {" "}
-                    <img src={message.content} alt="avatar" />
-                  </div>
-                )}
+            </div>
+          </div>
+          <div className="chat-history  ">
+            <ul className="m-b-0">
+              {messages?.map((message, i) =>
+                !getSender(message) ? (
+                  <li key={i} className="clearfix" ref={ref}>
+                    <div className="message-data text-left">
+                      <img
+                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                        alt="avatar"
+                      />
+                      <span>{message.sender.userName}</span>
+                    </div>
+                    {!message.isFile ? (
+                      <div className="message my-message">
+                        {message.content.includes(
+                          "http://localhost:3000/home/makecall/"
+                        ) ? (
+                          <a style={{ color: "blue" }} href={message.content}>
+                            <i className="bi bi-link"></i> Click here to join a
+                            videoCall
+                          </a>
+                        ) : (
+                          <>{message.content}</>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="message my-message">
+                        <img
+                          style={{ width: "390px" }}
+                          src={message.content}
+                          alt="avatar"
+                        />
+                      </div>
+                    )}
 
-                <span
-                  className="message-data mx-2"
-                  style={{
-                    transform: "translateX(-50%) translateY(-50%)",
-                    color: "#291872",
-                    fontSize: "13px",
-                    fontFamily: "Orbitron",
-                    letterSpacing: "1px",
-                  }}
-                >
-                  <Moment format="HH:MM | DD-MM-YYYY ">
-                    <span className="message-data-time">
-                      {message.createdAt}
+                    <span
+                      className="message-data mx-2"
+                      style={{
+                        transform: "translateX(-50%) translateY(-50%)",
+                        color: "#291872",
+                        fontSize: "13px",
+                        fontFamily: "Orbitron",
+                        letterSpacing: "1px",
+                      }}
+                    >
+                      <Moment format="HH:MM | DD-MM-YYYY ">
+                        <span className="message-data-time">
+                          {message.createdAt}
+                        </span>
+                      </Moment>
                     </span>
-                  </Moment>
-                </span>
-              </li>
+                  </li>
+                ) : (
+                  <li key={i} className="clearfix">
+                    <div className="message-data text-right">
+                      <span>{EmployeeReducer.connectedEmployee.userName}</span>
+                      <img
+                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                        alt="avatar"
+                      />
+                    </div>
+                    {!message.isFile ? (
+                      <div className="message other-message float-right">
+                        {message.content.includes(
+                          "http://localhost:3000/home/makecall/"
+                        ) ? (
+                          <a style={{ color: "blue" }} href={message.content}>
+                            <i className="bi bi-link"></i> Click here to join a
+                            videoCall
+                          </a>
+                        ) : (
+                          <>{message.content}</>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="message other-message float-right">
+                        <img
+                          style={{ width: "390px" }}
+                          src={message.content}
+                          alt="avatar"
+                        />
+                      </div>
+                    )}
+
+                    <span
+                      className="float-right my-3 mx-2 "
+                      style={{
+                        color: "#291872",
+                        fontSize: "13px",
+                        fontFamily: "Orbitron",
+                        letterSpacing: "1px",
+                        float: "right ",
+                      }}
+                    >
+                      <Moment format="hh:mm | DD-MM-YYYY ">
+                        <span className="message-data-time">
+                          {message.createdAt}
+                        </span>
+                      </Moment>
+                    </span>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+          <div className="chat-message clearfix">
+            {istyping ? (
+              <div className="chat-bubble my-4">
+                <div className="typing">
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                </div>
+              </div>
             ) : (
-              <li key={i} className="clearfix">
-                <div className="message-data text-right">
-                  <span>{EmployeeReducer.connectedEmployee.userName}</span>
-                  <img
-                    src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                    alt="avatar"
+              <></>
+            )}
+            {Object.keys(displayed).length != 0 ? (
+              <>
+                <div className="input-group mb-0" onKeyDown={sendMessage}>
+                  <div className="input-group-prepend image-uploadss">
+                    <span className="input-group-text">
+                      <i className="bi bi-card-image" onClick={handleClick}></i>
+                    </span>
+                    <form>
+                      <input
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        ref={hiddenFileInput}
+                        onChange={(e) => uploadImage(e)}
+                      />
+                    </form>
+                  </div>
+                  <div className="input-group-prepend">
+                    <span className="input-group-text emoji">
+                      <BsEmojiSmileFill onClick={handleEmojiPicker} />
+                    </span>
+                  </div>
+
+                  <div className="input-group-prepend ">
+                    <span className="input-group-text ">
+                      <i className="fa fa-send"></i>
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter text here..."
+                    onChange={typingHandler}
+                    value={newMessage}
                   />
                 </div>
-                {!message.isFile ? (
-                  <div className="message other-message float-right">
-                    {message.content}
-                  </div>
-                ) : (
-                  <div className="message other-message float-right">
-                    <img
-                      style={{ width: "390px" }}
-                      src={message.content}
-                      alt="avatar"
-                    />
-                  </div>
-                )}
-
-                <span
-                  className="float-right my-3 mx-2 "
-                  style={{
-                    color: "#291872",
-                    fontSize: "13px",
-                    fontFamily: "Orbitron",
-                    letterSpacing: "1px",
-                    float: "right ",
-                  }}
-                >
-                  <Moment format="hh:mm | DD-MM-YYYY ">
-                    <span className="message-data-time">
-                      {message.createdAt}
-                    </span>
-                  </Moment>
-                </span>
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-      <div className="chat-message clearfix">
-        {istyping ? (
-          <div className="chat-bubble my-4">
-            <div className="typing">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
-            </div>
+                {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
+              </>
+            ) : null}
           </div>
-        ) : (
-          <></>
-        )}
-        {Object.keys(displayed).length != 0 ? (
-          <div className="input-group mb-0" onKeyDown={sendMessage}>
-            <div className="input-group-prepend image-uploadss">
-              <span className="input-group-text">
-                <i className="bi bi-card-image" onClick={handleClick}></i>
-              </span>
-              <form>
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  ref={hiddenFileInput}
-                  onChange={(e) => uploadImage(e)}
-                />
-              </form>
-            </div>
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="fa fa-send"></i>
-              </span>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter text here..."
-              onChange={typingHandler}
-              value={newMessage}
-            />
+        </>
+      ) : (
+        <div className="chat-header clearfix">
+          <div className="row d-inline">
+            <h4 className="h4-class ">Please Select User</h4>
           </div>
-        ) : null}
-      </div>
-      </>):null}
+        </div>
+      )}
     </>
   );
 }

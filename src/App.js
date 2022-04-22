@@ -31,6 +31,7 @@ export default function App() {
     import("./components/authentification/faceId/faceId")
   );
   const Test = React.lazy(() => import("./components/test/Test"));
+  const NotFound = React.lazy(() => import("./components/NotFound/NotFound"));
   return (
     <BrowserRouter>
       <React.Suspense fallback={loading}>
@@ -85,6 +86,7 @@ export default function App() {
             name="test"
             render={(props) => <Test {...props} />}
           />
+          <Route component={NotFound} />
         </Switch>
       </React.Suspense>
     </BrowserRouter>

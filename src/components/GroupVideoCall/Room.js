@@ -144,11 +144,23 @@ export default function Room(props) {
   }
 
   const leaveCall = () => {
+    // console.log("melowl", peers);
     socketRef.current.destroy();
-    stream.getTracks().forEach(function (track) {
+    stream?.getTracks().forEach(function (track) {
       track.stop();
     });
+
+    var index = peers.indexOf(connectionRef.current);
+
+    if (index !== -1) {
+      peers.splice(index, 1);
+      setPeers(peers);
+    }
+
+    // console.log("melekh", peers);
+
     setredirectOrNo(true);
+    stream.getTracks[0].enabled = false;
   };
 
   const handleCameraButtonPressed = () => {

@@ -34,19 +34,6 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
       setPath(false);
     }
   });
-  useEffect(() => {
-    setTimeout(() => {
-      socket.emit("persistIdEmployee", {
-        me: socket.id,
-        name: EmployeeReducer.connectedEmployee.userName,
-        id: EmployeeReducer.connectedEmployee._id,
-      });
-      dispatch({
-        type: "SOCKET",
-        payload: socket,
-      });
-    }, 1000);
-  }, []);
   return (
     <>
       {!path ? (

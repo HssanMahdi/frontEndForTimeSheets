@@ -2,7 +2,10 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ChangeSelectedChat, ChatFetcher } from "../../../redux/actions/EmployeeActions";
+import {
+  ChangeSelectedChat,
+  ChatFetcher,
+} from "../../../redux/actions/EmployeeActions";
 
 export default function UpdateChatModal(props) {
   const { EmployeeReducer } = useSelector((state) => state);
@@ -19,9 +22,8 @@ export default function UpdateChatModal(props) {
   const closeRef = useRef();
   useEffect(() => {
     setSelectedChat(props.selectedChat);
-    setGroupChatName("");
   }, [props.selectedChat]);
-  useEffect(() => {}, [groupChatName]);
+
   const config = {
     headers: {
       Authorization: `Bearer ${EmployeeReducer.token}`,
@@ -56,9 +58,11 @@ export default function UpdateChatModal(props) {
         config
       );
       setSelectedChat(data);
-      dispatch(ChangeSelectedChat(data))
+      dispatch(ChangeSelectedChat(data));
       setGroupChatName("");
+      setSearchUpd("");
       dispatch(ChatFetcher(config));
+      closeRef.current.click();
     }
   };
   const handleAddUser = async (user1) => {
@@ -66,21 +70,23 @@ export default function UpdateChatModal(props) {
       setUserExist(true);
       setShowElement(true);
       return;
-    }
-    if (selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id) {
-      return;
-    }
-    const { data } = await axios.put(
-      `/chat/groupadd`,
-      {
-        chatId: selectedChat._id,
-        employeeId: user1._id,
-      },
-      config
-    );
+    } else {
+      const { data } = await axios.put(
+        `/chat/groupadd`,
+        {
+          chatId: selectedChat._id,
+          employeeId: user1._id,
+        },
+        config
+      );
 
-    setSelectedChat(data);
-    setGroupChatName("");
+      setSelectedChat(data);
+      setGroupChatName("");
+      setSearchUpd("");
+    }
+    // if (selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id) {
+    //   return;
+    // }
   };
   const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== EmployeeReducer.connectedEmployee._id) {
@@ -91,7 +97,6 @@ export default function UpdateChatModal(props) {
     } else {
       setIsAdmin(false);
       if (user1._id !== EmployeeReducer.connectedEmployee._id) {
-        console.log("mechya f s7i7");
         const { data } = await axios.put(
           `/chat/groupremove`,
           {
@@ -118,7 +123,7 @@ export default function UpdateChatModal(props) {
     );
 
     setSelectedChat();
-    // dispatch(ChangeSelectedChat())
+    dispatch(ChangeSelectedChat());
     dispatch(ChatFetcher(config));
     closeRef.current.click();
 
@@ -181,6 +186,7 @@ export default function UpdateChatModal(props) {
                       type="email"
                       className="form-control"
                       placeholder="Add User To Group"
+                      value={searchUpd}
                       onChange={(e) => handleSearchU(e.target.value)}
                     />
                   </div>
@@ -222,7 +228,6 @@ export default function UpdateChatModal(props) {
                       id="img-search"
                     />
                     <span className="mx-3" style={{ float: "left" }}>
-                      {" "}
                       {seach.userName}
                     </span>
                   </a>
