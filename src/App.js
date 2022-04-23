@@ -76,11 +76,11 @@ export default function App() {
             name="employees"
             render={(props) => <Employees {...props} />}
           />
-          <Route
-            path="/videocall"
+          {/* <Route
+            path="/videocall/:roomID"
             name="VideoCall"
             render={(props) => <VideoChat {...props} />}
-          />
+          /> */}
           <Route
             path="/test"
             name="test"

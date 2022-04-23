@@ -44,7 +44,7 @@ const routes = [
   { path: "/home/FileUpload", name: "FileUpload", component: FileUpload }, 
   { path: "/home/chat", name: "Chat", component: Chat },
   { path: "/home/search", name: "searchG", component: SearchGoogle },
-  { path: "/home/videocall", name: "videoCall", component: VideoCall },
+  { path: "/home/videocall/:roomID", name: "videoCall", component: VideoCall },
   { path: "/home/profile", name: "profile", component: Profile },
 { path: "/Project", name: 'project', component: Project },
 { path: '/home/employee_salary', name: 'employee_salary', component: Salary },

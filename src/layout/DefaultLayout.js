@@ -7,20 +7,22 @@ import { Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import "./defaultLayout.css";
 import { useHistory } from "react-router-dom";
-import { parse, stringify } from 'flatted';
+import { parse, stringify } from "flatted";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { notifications } from "../redux/actions/EmployeeActions";
+import Swal from "sweetalert2";
 const socket = io.connect("http://localhost:3001");
 
 const Login = React.lazy(() =>
   import("../components/authentification/Authentification")
 );
-var selectedChatCompare;
+var selectedChatCompare, linkTo;
 export default function DefaultLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [redirectOrNot, setRedirectOrNot] = useState(false);
   const [redirectToVideo, setRedirectToVideo] = useState(false);
+  const [redirectToChat, setRedirectToChat] = useState(false);
   const { EmployeeReducer } = useSelector((state) => state);
   const history = useHistory();
   const [caller, setCaller] = useState("");
@@ -36,11 +38,11 @@ export default function DefaultLayout() {
   };
   useEffect(() => {
     if (EmployeeReducer.token.length === 0) {
-      setRedirectOrNot(true)
+      setRedirectOrNot(true);
     }
   }, []);
   // if (socket) {
-  //   socket.on("callUser", (data) => {
+  //   socket.on("calledUser", (data) => {
   //     setReceivingCall(true);
   //     setCaller(data.from);
   //     // setName(data.name);
@@ -49,19 +51,46 @@ export default function DefaultLayout() {
   //   });
   // }
   const answerCall = () => {
-    setReceivingCall(false)
-    setRedirectToVideo(true)
+    setRedirectToVideo(true);
+    setReceivingCall(false);
+    history.push(`/home/videocall/${linkTo}`);
   };
   const declineCall = () => {
-    setReceivingCall(false)
+    socket.emit("hangup", {
+      tohangup: caller,
+    });
+    setReceivingCall(false);
   };
   useEffect(() => {
-    console.log("mountit")
+    console.log("mountit");
     setTimeout(() => {
       socket.emit("persistIdEmployee", {
         me: socket.id,
         name: EmployeeReducer.connectedEmployee.userName,
         id: EmployeeReducer.connectedEmployee._id,
+      });
+      socket.on("calledUser", (data) => {
+        setReceivingCall(true);
+        setCaller(data.from);
+        setName(data.from.userName);
+        linkTo = data.link;
+      });
+      socket.on("otherhangup", () => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Call declined",
+          timer: 2500,
+        });
+        setRedirectToChat(true);
+      });
+      socket.on("otherhanguptwo", () => {
+        Swal.fire({
+          icon: "error",
+          title: "Call ended",
+          timer: 2500,
+        });
+        setRedirectToChat(true);
       });
     }, 2000);
   }, []);
@@ -69,15 +98,15 @@ export default function DefaultLayout() {
     selectedChatCompare = EmployeeReducer.selectedChat;
   }, [EmployeeReducer.selectedChat]);
   socket.on("message recieved", (newMessageRecieved) => {
-    let notifs
+    let notifs;
     if (
-      !selectedChatCompare || 
+      !selectedChatCompare ||
       selectedChatCompare._id !== newMessageRecieved.chat._id
     ) {
       if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
-        notifs = EmployeeReducer.notification
-        console.log(notifs)
-        notifs.push(newMessageRecieved)
+        notifs = EmployeeReducer.notification;
+        console.log(notifs);
+        notifs.push(newMessageRecieved);
         dispatch(notifications(notifs));
       }
     }
@@ -97,21 +126,11 @@ export default function DefaultLayout() {
           <Sidebar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
         </div>
       </Suspense>
-      {redirectOrNot ? (
-        <Redirect to="/" />
-      ) : null
-      }
-      {redirectToVideo ? (
-        <Redirect
-          to={{
-            pathname: "/home/videocall",
-            state: { callerSignal: callerSignal, caller: caller }
-          }}
-        />
-      ) : null
-      }
-      {/* {receivingCall ? (
-        <div className="card-call">
+      {redirectOrNot ? <Redirect to="/" /> : null}
+      {redirectToChat ? <Redirect to="/home/chat" /> : null}
+      {redirectToVideo ? <Redirect to={`/home/videocall/${linkTo}`} /> : null}
+      {receivingCall ? (
+        <div className="card-call" style={{ zIndex: "99999" }}>
           <div className="header-call">
             <div className="animation-call">
               <span className="icon ring"></span>
@@ -125,10 +144,7 @@ export default function DefaultLayout() {
           </div>
 
           <div className="footer-call">
-            <div
-              className="bouton-call raccrocher"
-              onClick={declineCall}
-            >
+            <div className="bouton-call raccrocher" onClick={declineCall}>
               <span className="icon red"></span>
             </div>
             <div className="bouton-call decrocher" onClick={answerCall}>
@@ -136,8 +152,7 @@ export default function DefaultLayout() {
             </div>
           </div>
         </div>
-      ) : null} */}
-
+      ) : null}
     </Router>
   );
 }

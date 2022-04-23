@@ -115,10 +115,13 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         EmployeeReducer.checkPresence.push(false);
         dispatch(ChangeCheckPresence(EmployeeReducer.checkPresence));
       }
-      console.log("EmployeeReducer.checkPresence : ",EmployeeReducer.checkPresence)
+      console.log(
+        "EmployeeReducer.checkPresence : ",
+        EmployeeReducer.checkPresence
+      );
     }, 900000); //900000 every 15 mins
   };
-  
+
   function Item(props) {
     //? `New message in ${notif.chat.chatName}`:`New message in ${notif.sender.userName}`
     if (props.props.chat.isGroup) {
@@ -132,7 +135,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
               notifications(navNotifications.filter((n) => n !== props.props))
             );
             dispatch(ChangeSelectedChat(props.props.chat));
-            history.push('/home/chat')
+            history.push("/home/chat");
           }}
         >
           New message in group chat {props.props.chat.chatName}
@@ -150,7 +153,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             notifications(navNotifications.filter((n) => n !== props.props))
           );
           dispatch(ChangeSelectedChat(props.props.chat));
-          history.push('/home/chat')
+          history.push("/home/chat");
         }}
       >
         New message in chat with {props.props.sender.userName}
@@ -222,7 +225,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       let data = {
         notifications: EmployeeReducer.connectedEmployee.notifications,
       };
-      axios.post("/employee/updatenotifs", data, config)
+      axios.post("/employee/updatenotifs", data, config);
     }
     dispatch(Logout());
     console.log("keypressed : ", keysPressed);
@@ -354,7 +357,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
           <>
             <CopyToClipboard text={link}>
               <button
-                class="button-53"
+                className="button-53"
                 variant="contained"
                 onClick={sweetAlert}
                 style={{ backgroundColor: "#3984E6" }}
@@ -375,7 +378,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             playsInline
             muted
             ref={myVideo}
-            width={"70"}           
+            width={"70"}
             height={"35"}
             style={{ visibility: "hidden" }}
             autoPlay
@@ -383,7 +386,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         </span>
       </div>
       <div className="navbar__right">
-      <div>
+        <div>
           <div className="search-box">
             <input
               type="text"
@@ -436,10 +439,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
             </a>
           </OverlayTrigger>
         )}
-        {redirectToChat ?(
-          <Redirect to="/home/chat" />
-        ):null
-        }
+        {redirectToChat ? <Redirect to="/home/chat" /> : null}
       </div>
     </nav>
   );

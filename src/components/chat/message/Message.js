@@ -13,8 +13,9 @@ import {
   ChatFetcher,
   notifications,
 } from "../../../redux/actions/EmployeeActions";
+import moment from "moment";
 // const socket = io.connect("http://localhost:3001");
-var socket, selectedChatCompare;
+var socket;
 
 export default function Message(props) {
   const { EmployeeReducer } = useSelector((state) => state);
@@ -22,6 +23,7 @@ export default function Message(props) {
   const [messages, setMessages] = useState([]);
   const [displayed, setDisplayed] = useState({});
   const [newMessage, setNewMessage] = useState("");
+  const [selectedChatCompare, setSelectedChatCompare] = useState({});
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [selectedChat, setSelectedChat] = useState({});
@@ -44,6 +46,9 @@ export default function Message(props) {
     setNewMessage(message);
   };
 
+  function myTime(dateFromDB) {
+    return moment(dateFromDB).format("hh:mm");
+  }
   const uploadImage = (e) => {
     if (e !== undefined) {
       const configM = {
@@ -93,7 +98,7 @@ export default function Message(props) {
     displayedChanger();
     setNewMessage("");
     setIsTyping(false);
-    selectedChatCompare = selectedChat;
+    setSelectedChatCompare(selectedChat);
   }, [EmployeeReducer.selectedChat]);
 
   const handleClick = () => {
@@ -196,10 +201,19 @@ export default function Message(props) {
     fetchMessages();
     displayedChanger();
     setIsTyping(false);
-    selectedChatCompare = selectedChat;
+    setSelectedChatCompare(selectedChat);
     const ac = new AbortController();
     return () => ac.abort();
   }, [selectedChat]);
+  // useEffect(
+  //   () => () => {
+  //     console.log("5rajt");
+
+  //     setSelectedChatCompare({});
+  //   },
+  //   []
+  // );
+
   // selectedChat._id;
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -224,15 +238,20 @@ export default function Message(props) {
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+      // console.log(selectedChat == selectedChatCompare);
+
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
-      ) {return
+      ) {
+        return;
         // if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
         //   EmployeeReducer.notification.push(newMessageRecieved);
         //   dispatch(notifications(EmployeeReducer.notification));
         // }
       } else {
+        // dispatch(notifications());
+        // console.log("jeni msg");
         setMessages([...messages, newMessageRecieved]);
       }
     });
@@ -245,12 +264,14 @@ export default function Message(props) {
     return false;
   };
   function callThisPerson() {
-    selectedChat.employees?.map((employee) => {
+    EmployeeReducer.selectedChat.employees?.map((employee) => {
       if (employee._id != EmployeeReducer.connectedEmployee._id) {
+        let id = uuid();
         history.push({
-          pathname: "/home/videocall",
+          pathname: `/home/videocall/${id}`,
           state: { empToCall: employee },
         });
+        // history.push(`/home/videocall/${id}`)
       }
     });
   }
@@ -374,7 +395,8 @@ export default function Message(props) {
                         letterSpacing: "1px",
                       }}
                     >
-                      <Moment format="HH:MM | DD-MM-YYYY ">
+                      {myTime(message.createdAt)} |
+                      <Moment format=" DD-MM-YYYY ">
                         <span className="message-data-time">
                           {message.createdAt}
                         </span>
@@ -423,7 +445,8 @@ export default function Message(props) {
                         float: "right ",
                       }}
                     >
-                      <Moment format="hh:mm | DD-MM-YYYY ">
+                      {myTime(message.createdAt)} |
+                      <Moment format="DD-MM-YYYY ">
                         <span className="message-data-time">
                           {message.createdAt}
                         </span>

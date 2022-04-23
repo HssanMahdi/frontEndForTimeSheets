@@ -16,16 +16,19 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
   const history = useHistory();
   const re = pathToRegexp("/home/makecall/:roomID");
   const result = re.exec(location.pathname);
-  var idRoom;
+  const rev = pathToRegexp("/home/videocall/:roomID");
+  const resultv = rev.exec(location.pathname);
+  var idRoom, idRoomCall;
   function create() {
     const id = uuid();
     history.push(`/home/makecall/${id}`);
   }
   idRoom = result?.[1];
+  idRoomCall = resultv?.[1];
 
   useEffect(() => {
     if (
-      location.pathname === "/home/videocall" ||
+      location.pathname === `/home/videocall/${idRoomCall}` ||
       location.pathname === "/home/groupcall" ||
       location.pathname === `/home/makecall/${idRoom}`
     ) {
