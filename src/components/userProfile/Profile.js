@@ -1,58 +1,87 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Profile.css";
 import hello from "../../assets/edit.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { UpdateEmployee } from "../../redux/actions/EmployeeActions";
+import axios from "axios";
 export default function Profile() {
   const { EmployeeReducer } = useSelector((state) => state);
-  const [employeeModif, setEmployeeModif] = useState({
-    userName: "",
-    email: "",
-    phone: "",
-    adress:""
-  });
+  const hiddenFileInput = useRef();
+  const dispatch = useDispatch();
   const config = {
     headers: {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
   };
-  const onChange = (e) => {
-    setEmployeeModif({ ...employeeModif, [e.target.name]: e.target.value });
-  };
-  function edit (){
+
+  function edit() {
     Swal.fire({
-      title: 'Submit your Github username',
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Look up',
-      showLoaderOnConfirm: true,
-      preConfirm: (login) => {
-        return fetch(`//api.github.com/users/${login}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            return response.json()
-          })
-          .catch(error => {
-            Swal.showValidationMessage(
-              `Request failed: ${error}`
-            )
-          })
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: `${result.value.login}'s avatar`,
-          imageUrl: result.value.avatar_url
-        })
+      title: 'Update form',
+      html: `<input type="text" id="userName" class="swal2-input" value="${EmployeeReducer.connectedEmployee.userName}" />
+      <input type="text" id="email" class="swal2-input" value="${EmployeeReducer.connectedEmployee.email}" />
+      `,
+      confirmButtonText: 'Update',
+      focusConfirm: false,
+      preConfirm: () => {
+        const userName = Swal.getPopup().querySelector('#userName').value
+        const email = Swal.getPopup().querySelector('#email').value
+        let data = {
+          userName: userName,
+          email: email
+        }
+        return data
       }
-    })  
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios
+          .put("/employee/updateemployee", result.value, config)
+          .then((result) => {
+            dispatch({
+              type: "UPDATE_EMPLOYEE",
+              payload: result.data
+            });
+            Swal.fire({
+              icon: "success",
+              title: "Informations Updated",
+              showConfirmButton: false,
+              timer: 1500,
+            })
+          })
+      }
+    })
   }
+  const uploadImage = async (e) => {
+    if (e !== undefined) {
+      const form = new FormData();
+      form.append("file", e.target.files[0]);
+      form.append("upload_preset", "onTime-app");
+      await fetch("https://api.cloudinary.com/v1_1/espritt/image/upload", {
+        method: "post",
+        body: form,
+      })
+        .then((res) => res.json())
+        .then(async (result) => {
+          let data={
+            images:result.secure_url
+          }
+          await axios
+          .put("/employee/updateemployee", data, config)
+          .then((result) => {
+            dispatch({
+              type: "UPDATE_EMPLOYEE",
+              payload: result.data
+            });
+            Swal.fire({
+              icon: "success",
+              title: "Image updated",
+              showConfirmButton: false,
+              timer: 1500,
+            })
+          })
+        });
+    }
+  };
   return (
     <main>
       <div className="main__container">
@@ -79,13 +108,14 @@ export default function Profile() {
                       <input
                         className="classProfile"
                         type="file"
-                        id="fileToUpload"
+                        accept="image/png, image/jpeg"
+                        ref={hiddenFileInput}
                         style={{ visibility: "hidden" }}
-                        name="fileToUpload"
+                        onChange={(e) => uploadImage(e)}
                       />
                     </label>
                     <img
-                      src="https://i.ibb.co/yNGW4gg/avatar.png"
+                      src={EmployeeReducer.connectedEmployee.images}
                       id="blah"
                       alt="Avatar"
                     />
@@ -118,34 +148,10 @@ export default function Profile() {
                         className="bi bi-envelope-fill mx-2"
                       />
                       <b >{EmployeeReducer.connectedEmployee.email}</b>
-                      
-                    </li>
-                    <li className="classProfile">
-                      <i
-                        style={{ color: "#252d57" }}
-                        className="bi bi-telephone mx-2"
-                      />
-                      <b name="phone" >{EmployeeReducer.connectedEmployee.phone}</b>
-                      {/* <i
-                        className="fa faa fa-check"
-                        style={{ display: "none" }}
-                        id="check2"
-                      /> */}
-                    </li>
-                    <li className="classProfile">
-                      <i
-                        style={{ color: "#252d57" }}
-                        className="bi bi-mailbox2 mx-2"
-                      />
-                      <b >{EmployeeReducer.connectedEmployee.address}</b>
-                      {/* <i
-                        className="fa faa  fa-check"
-                        style={{ display: "none" }}
-                        id="check3"
-                      /> */}
+
                     </li>
                   </ul>
-                  <button className="button-29" >Edit Profile</button>
+                  <button className="button-29" onClick={edit}>Edit Profile</button>
                 </td>
               </tr>
             </tbody>

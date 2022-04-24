@@ -162,41 +162,30 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
   }
 
   const logout = async () => {
-    // const toUpdate = {
-    //   todaysWorkedHours: 0,
-    //   totalWorkedHours: 0,
-    //   overTimeHours: 0
-    // }
-    // const timeLogout = new Date();
-    // const timeLastLogin = new Date(EmployeeReducer.connectedEmployee.timeLastLogin);
-    // const timeLogin = new Date(EmployeeReducer.timeLogin);
-    // const workedHoursThisSession = timeLogout.getTime() - timeLogin.getTime();
-    // let seconds = Math.floor(workedHoursThisSession / 1000);
-    // let minutes = Math.floor(seconds / 60);
-    // if (timeLogout.getMonth() === timeLogin.getMonth() && timeLogout.getDate() === timeLogin.getDate()
-    //   && timeLogout.getFullYear() === timeLogin.getFullYear()) {
-    //   if (timeLastLogin.getMonth() === timeLogin.getMonth() && timeLastLogin.getDate() === timeLogin.getDate()
-    //     && timeLastLogin.getFullYear() === timeLogin.getFullYear()) {
-    //     toUpdate.todaysWorkedHours = EmployeeReducer.connectedEmployee.todaysWorkedHours + minutes
-    //     toUpdate.totalWorkedHours = EmployeeReducer.connectedEmployee.totalWorkedHours + minutes
-    //   } else {
-    //     toUpdate.todaysWorkedHours = minutes
-    //     toUpdate.totalWorkedHours = EmployeeReducer.connectedEmployee.totalWorkedHours + minutes
-    //   }
-    // }else{
-    // time login to 00 &&& 00 to timeLogout
-    //   var now = new Date(),
-    // then = new Date(
-    //     now.getFullYear(),
-    //     now.getMonth(),
-    //     now.getDate(),
-    //     0,0,0),
-    // }
-    // if (toUpdate.todaysWorkedHours > 480) {
-    //   toUpdate.overTimeHours = toUpdate.todaysWorkedHours - 480
-    //   toUpdate.todaysWorkedHours = 480;
-    // }
-    // console.log(toUpdate)
+    const toUpdate = {
+      todaysWorkedHours: 0,
+      totalWorkedHours: 0,
+      overTimeHours: 0,
+    }
+    const timeLogout = new Date();
+    const timeLastLogin = new Date(EmployeeReducer.connectedEmployee.timeLastLogin);
+    const timeLogin = new Date(EmployeeReducer.timeLogin);
+    const workedHoursThisSession = timeLogout.getTime() - timeLogin.getTime();
+    let seconds = Math.floor(workedHoursThisSession / 1000);
+    let minutes = Math.floor(seconds / 60);
+    if (timeLastLogin.getMonth() === timeLogin.getMonth() && timeLastLogin.getDate() === timeLogin.getDate()
+      && timeLastLogin.getFullYear() === timeLogin.getFullYear()) {
+      toUpdate.todaysWorkedHours = EmployeeReducer.connectedEmployee.todaysWorkedHours + minutes
+      toUpdate.totalWorkedHours = EmployeeReducer.connectedEmployee.totalWorkedHours + minutes
+    } else {
+      toUpdate.todaysWorkedHours = minutes
+      toUpdate.totalWorkedHours = EmployeeReducer.connectedEmployee.totalWorkedHours + minutes
+    }
+    if (toUpdate.todaysWorkedHours > 480) {
+      toUpdate.overTimeHours = toUpdate.todaysWorkedHours - 480
+      toUpdate.todaysWorkedHours = 480;
+    };
+    axios.put('/employee/updatehours', toUpdate, config)
     navigator.geolocation.getCurrentPosition((position) => {
       if (
         getDistanceFromLatLonInKm(
@@ -227,8 +216,25 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
       };
       axios.post("/employee/updatenotifs", data, config);
     }
+    let badKeys = 0;
+    let goodKeys = 0;
+    keysPressed.map((key) => {
+      if (key.toLowerCase() === 'z' || key.toLowerCase() === 'q' || key.toLowerCase() === 's' || key.toLowerCase() === 'd') {
+        badKeys++
+      } else {
+        goodKeys++
+      }
+    })
+    if (badKeys > goodKeys * 2) {
+      EmployeeReducer.connectedEmployee.notifications.push(
+        "Employee suspected of gaming while supposedly working"
+      );
+      let data = {
+        notifications: EmployeeReducer.connectedEmployee.notifications,
+      };
+      axios.post("/employee/updatenotifs", data, config);
+    }
     dispatch(Logout());
-    console.log("keypressed : ", keysPressed);
     setredirectOrNo(true);
   };
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -238,9 +244,9 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
     var a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     if (d > 10) {

@@ -114,6 +114,17 @@ export const ChangeCheckPresence = (checkPresence) => dispatch => {
   })
 }
 
+export const UpdateEmployee = (data,config) => async (dispatch) => {
+  await axios
+  .put("/employee/updateemployee",data,config)
+  .then((result)=>{
+    console.log(result.data)
+    // dispatch({
+    //   type: "UPDATE_EMPLOYEE",
+    //   payload: result.data
+    // });
+  })
+}
   // await axios
   //   .put(`/employee/updatehours`, employeeToUpdate.connectedEmployee, config)
   //   .then((result) => {

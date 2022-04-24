@@ -7,12 +7,12 @@ import { Login, SignUp } from "../../redux/actions/EmployeeActions";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import * as faceapi from "@vladmandic/face-api";
+import Swal from "sweetalert2";
 
 export default function Authentification() {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [connected, setConnected] = useState(false);
   const [redirectToFaceId, setRedirectToFaceId] = useState(false);
   const [employeeSignUp, setEmployeeSignUp] = useState({
     userName: "",
@@ -24,7 +24,8 @@ export default function Authentification() {
     todaysWorkedHours: 0,
     hourPrice: 0,
     totalWorkedHours: 0,
-    hourPrice: 15
+    hourPrice: 15,
+    overTimeHours: 0
   });
   const [employeeLogin, setEmployeeLogin] = useState({
     email: "",
@@ -57,7 +58,17 @@ export default function Authentification() {
       faceapi.nets.faceExpressionNet.loadFromUri("/model")
     ])
   },[])
-
+  function checkEmail(){
+    if(employeeLogin.email===""){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'In order to use face Id, Please enter your Email first'
+      })
+    }else{
+      setRedirectToFaceId(true)
+    }
+  }
   return (
     <div className="section-g img-back">
       <div className="container">
@@ -110,7 +121,7 @@ export default function Authentification() {
                           submit
                         </button>
                         &nbsp;&nbsp;&nbsp;
-                        <button className="btn-a mt-4" onClick={()=>setRedirectToFaceId(true)}>
+                        <button className="btn-a mt-4" onClick={()=>checkEmail()}>
                           face id
                         </button>
                         <p className="mb-0 mt-4 text-center">

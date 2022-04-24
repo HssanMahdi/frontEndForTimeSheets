@@ -71,7 +71,7 @@ export default function (state = initialState, action) {
         timeLogin: "",
         longLatLogin: {},
         socket: "",
-		notification: [],
+        notification: [],
         selectedChat: {},
         taskNow: {},
         checkPresence: []
@@ -96,7 +96,7 @@ export default function (state = initialState, action) {
         ...state,
         checkPresence: action.payload
       }
-	case "NOTIFICATIONS_CHANGE":
+    case "NOTIFICATIONS_CHANGE":
       return {
         ...state,
         notification: action.payload
@@ -105,6 +105,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         selectedChat: action.payload
+      };
+    case "UPDATE_EMPLOYEE":
+      return {
+        ...state,
+        connectedEmployee: action.payload
       };
     default:
       return state;
