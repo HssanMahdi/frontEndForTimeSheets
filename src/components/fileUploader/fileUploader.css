@@ -1,0 +1,8 @@
+main {
+    background: #f3f4f6;
+    grid-area: main;
+    overflow: auto;
+}
+.container-fluid {
+    padding: 20px 35px;
+}

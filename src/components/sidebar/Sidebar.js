@@ -6,6 +6,7 @@ import { v1 as uuid } from "uuid";
 import pathToRegexp from "path-to-regexp";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidV4} from 'uuid';
 const socket = io.connect("http://localhost:3001");
 
 export default function Sidebar({ sidebarOpen, closeSidebar }) {
@@ -85,13 +86,13 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
               <Link to="/home/Calendar">Calendar</Link>
             </div>
             <div className="sidebar__link">
-              <i className="fa fa-archive"></i>
-              <Link to="/home/FileUpload">File Manager</Link>
-            </div>
-            <div className="sidebar__link">
-              <i className="fa fa-book"></i>
-              <Link to="/home/FileEdit/document/lsdjhqsd">File Editor</Link>
-            </div>
+                    <i className="fa fa-file"></i>
+                    <Link to={`/home/FileEdit/documents/${uuidV4()}`}>File Editor</Link> 
+                </div>
+                <div className="sidebar__link">
+                    <i className="fa fa-archive"></i>
+                    <Link to={"/home/fileUploader"}>File Uploader</Link> 
+                </div>
             <h3 className="text_pad">CHAT</h3>
             <div className="sidebar__link">
               <i className="fa fa-book"></i>

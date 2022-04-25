@@ -3,7 +3,7 @@ import React from "react";
 const Main = React.lazy(() => import("./components/main/Main"));
 const Calendar = React.lazy(() => import("./components/calendar/Calendar"));
 const FileEdit = React.lazy(() => import("./components/fileEdit/FileEdit"));
-const FileUpload = React.lazy(() => import("./components/file/File"));
+const fileUploader = React.lazy(() => import("./components/fileUploader/fileUploader"));
 const Chat = React.lazy(() => import("./components/chat/Chat"));
 const VideoCall = React.lazy(() => import("./components/videoCall/VideoCall"));
 const Salary = React.lazy(() => import("./components/Salary/Salary"));
@@ -40,8 +40,8 @@ const routes = [
   { path: "/home/dashboard", name: "Dashboard", component: Main },
   { path: "/home/employees", name: "Employees", component: Employees },
   { path: "/home/Calendar", name: "Calendar", component: Calendar },
-  { path: "/home/FileEdit/document/:id", name: "FileEdit", component: FileEdit },
-  { path: "/home/FileUpload", name: "FileUpload", component: FileUpload }, 
+  { path: "/home/FileEdit/documents/:id", name: "FileEdit", component: FileEdit }, 
+  { path: "/home/fileUploader", name: "fileUploader", component: fileUploader }, 
   { path: "/home/chat", name: "Chat", component: Chat },
   { path: "/home/search", name: "searchG", component: SearchGoogle },
   { path: "/home/videocall/:roomID", name: "videoCall", component: VideoCall },

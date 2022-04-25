@@ -61,7 +61,7 @@ main {
     font-family: sans-serif;
   }
   #header button {
-    background-color:#92a1d1;
+    background-color:rgb(30, 45, 78);
   }
   .calendar-container {
       display: flex;
@@ -118,6 +118,10 @@ main {
     border-radius: 5px;
     max-height: 55px;
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: center; */
   }
   .padding {
     cursor: default !important;
