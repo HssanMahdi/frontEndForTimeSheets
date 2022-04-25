@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { parse, stringify } from "flatted";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { notifications } from "../redux/actions/EmployeeActions";
+import { ChatFetcher, notifications } from "../redux/actions/EmployeeActions";
 import Swal from "sweetalert2";
 const socket = io.connect("http://localhost:3001");
 
@@ -30,6 +30,14 @@ export default function DefaultLayout() {
   const [callerSignal, setCallerSignal] = useState();
   const [name, setName] = useState("");
   const dispatch = useDispatch();
+  const config = {
+    headers: {
+      Authorization: `Bearer ${EmployeeReducer.token}`,
+    },
+  };
+  const fetchChats = async () => {
+    dispatch(ChatFetcher(config));
+  };
   const openSidebar = () => {
     setSidebarOpen(true);
   };
@@ -91,6 +99,9 @@ export default function DefaultLayout() {
           timer: 2500,
         });
         setRedirectToChat(true);
+      });
+      socket.on("refetchChats", () => {
+        fetchChats();
       });
     }, 2000);
   }, []);

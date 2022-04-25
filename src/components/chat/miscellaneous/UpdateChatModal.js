@@ -2,11 +2,13 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { io } from "socket.io-client";
 import {
   ChangeSelectedChat,
   ChatFetcher,
 } from "../../../redux/actions/EmployeeActions";
 
+var socket;
 export default function UpdateChatModal(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -29,6 +31,11 @@ export default function UpdateChatModal(props) {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
   };
+  useEffect(()=>{
+    socket = io.connect("http://localhost:3001", {
+      transports: ["websocket"],
+    });
+  },[])
   useEffect(() => {
     setTimeout(function () {
       setShowElement(false);
@@ -57,6 +64,7 @@ export default function UpdateChatModal(props) {
         },
         config
       );
+      socket.emit('chatCreation',data.employees)
       setSelectedChat(data);
       dispatch(ChangeSelectedChat(data));
       setGroupChatName("");
@@ -79,7 +87,7 @@ export default function UpdateChatModal(props) {
         },
         config
       );
-
+      socket.emit('chatCreation',data.employees)
       setSelectedChat(data);
       setGroupChatName("");
       setSearchUpd("");
@@ -105,7 +113,7 @@ export default function UpdateChatModal(props) {
           },
           config
         );
-
+        socket.emit('chatCreation',data.employees)
         setSelectedChat(data);
 
         setGroupChatName("");

@@ -2,12 +2,12 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { io } from "socket.io-client";
 import { ChatFetcher } from "../../../redux/actions/EmployeeActions";
-
+var socket;
 export default function GroupChatModal() {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const socket = EmployeeReducer.socket;
   const [groupChatName, setGroupChatName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchUser, setSearchUser] = useState("");
@@ -22,6 +22,11 @@ export default function GroupChatModal() {
       Authorization: `Bearer ${EmployeeReducer.token}`,
     },
   };
+  useEffect(()=>{
+    socket = io.connect("http://localhost:3001", {
+      transports: ["websocket"],
+    });
+  },[])
   useEffect(() => {
     setTimeout(function () {
       setShowElement(false);
@@ -63,11 +68,11 @@ export default function GroupChatModal() {
         },
         config
       );
+      socket.emit('chatCreation',data.employees)
       setGroupChatName("");
       setSearchUser("");
       setSelectedUsers([]);
       dispatch(ChatFetcher(config));
-      socket.emit("groupChatCreation", selectedUsers);
 
       closeRef.current.click();
     }

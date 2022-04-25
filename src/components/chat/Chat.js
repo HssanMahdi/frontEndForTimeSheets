@@ -10,12 +10,12 @@ import {
 import Message from "./message/Message";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatFetcher } from "../../redux/actions/EmployeeActions";
+import { io } from "socket.io-client";
 // import { Socket } from "socket.io-client";
-
+var socket;
 export default function Chat(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const socket = EmployeeReducer.socket;
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [selectedChat, setSelectedChat] = useState({});
@@ -40,6 +40,8 @@ export default function Chat(props) {
       employeeId: selectedSearchedEmployee._id,
     };
     const { data } = await axios.post("/chat", employeeToCheckChat, config);
+    socket.emit('chatCreation',data.employees)
+    
     dispatch(ChangeSelectedChat(data));
     fetchChats();
     setSelectedChat(data);
@@ -52,17 +54,20 @@ export default function Chat(props) {
   }
   useEffect(() => () => dispatch(ChangeSelectedChat()), []);
   useEffect(() => {
+    socket = io.connect("http://localhost:3001", {
+      transports: ["websocket"],
+    });
     dispatch(CompanWorkers(config));
     fetchChats();
   }, []);
   useEffect(() => {
     setSelectedChat(EmployeeReducer.selectedChat);
   }, [EmployeeReducer.selectedChat]);
-  if (socket) {
-    socket.on("refetchChats", () => {
-      fetchChats();
-    });
-  }
+  // if (socket) {
+  //   socket.on("refetchChats", () => {
+  //     fetchChats();
+  //   });
+  // }
 
   useEffect(() => {
     dispatch(CompanWorkers(config));
