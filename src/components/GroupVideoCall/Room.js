@@ -9,7 +9,7 @@ import { Redirect } from "react-router-dom";
 const StyledVideo = styled.video`
   height: 50%;
   width: 45%;
-  margin-left: 68px;
+  margin-left:70px;
   border-radius: 100px;
   padding-bottom: 30px;
 `;

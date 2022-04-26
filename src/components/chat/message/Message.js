@@ -109,7 +109,7 @@ export default function Message(props) {
     if (typeof selectedChat !== "undefined") {
       if (Object.entries(selectedChat).length !== 0) {
         const { data } = await axios.get(
-          `/message/${selectedChat._id}`,
+          `/message/${EmployeeReducer.selectedChat._id}`,
           config
         );
         setMessages(data);
@@ -195,6 +195,18 @@ export default function Message(props) {
     socket.on("connection", setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    socket.on("message recieved", (newMessageRecieved) => {
+      console.log("chatnewmessage : ",newMessageRecieved.chat)
+      console.log("chat selected : ",EmployeeReducer.selectedChat._id)
+      if (
+        !EmployeeReducer.selectedChat._id || // if chat is not selected or doesn't match current chat
+        EmployeeReducer.selectedChat._id !== newMessageRecieved.chat._id
+      ) {
+        return;
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -236,26 +248,6 @@ export default function Message(props) {
     }, timerLength);
   };
 
-  useEffect(() => {
-    socket.on("message recieved", (newMessageRecieved) => {
-      // console.log(selectedChat == selectedChatCompare);
-
-      if (
-        !selectedChatCompare || // if chat is not selected or doesn't match current chat
-        selectedChatCompare._id !== newMessageRecieved.chat._id
-      ) {
-        return;
-        // if (!EmployeeReducer.notification.includes(newMessageRecieved)) {
-        //   EmployeeReducer.notification.push(newMessageRecieved);
-        //   dispatch(notifications(EmployeeReducer.notification));
-        // }
-      } else {
-        // dispatch(notifications());
-        // console.log("jeni msg");
-        setMessages([...messages, newMessageRecieved]);
-      }
-    });
-  });
 
   const getSender = (msg) => {
     if (msg.sender._id === EmployeeReducer.connectedEmployee._id) {
@@ -311,7 +303,7 @@ export default function Message(props) {
                     <>
                       <div className="col-lg-12">
                         <a data-toggle="modal" data-target="#view_info">
-                          <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg?fbclid=IwAR2PGk8pKz8LIGKpG1d3Y2Z-gXOoZeY8w7E2leuZNGDctvWZB0mpLuOc0DM" />
                         </a>
                         <div className="chat-about">
                           <h6 className="m-b-0">{selectedChat.chatName}</h6>
@@ -357,7 +349,8 @@ export default function Message(props) {
                   <li key={i} className="clearfix" ref={ref}>
                     <div className="message-data text-left">
                       <img
-                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                      style={{marginRight: "8px"}}
+                        src={message.sender.images}
                         alt="avatar"
                       />
                       <span>{message.sender.userName}</span>
@@ -408,7 +401,8 @@ export default function Message(props) {
                     <div className="message-data text-right">
                       <span>{EmployeeReducer.connectedEmployee.userName}</span>
                       <img
-                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                      style={{marginLeft: "13px"}}
+                        src={EmployeeReducer.connectedEmployee.images}
                         alt="avatar"
                       />
                     </div>

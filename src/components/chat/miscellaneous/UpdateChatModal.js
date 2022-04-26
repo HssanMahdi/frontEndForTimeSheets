@@ -41,6 +41,7 @@ export default function UpdateChatModal(props) {
       setShowElement(false);
       setIsAdmin(false);
       setUserExist(false);
+      setInputName(false)
     }, 3000);
   }, [showElement]);
   const handleSearchU = async (query) => {
@@ -129,7 +130,7 @@ export default function UpdateChatModal(props) {
       },
       config
     );
-
+    socket.emit('chatCreation',data.employees)
     setSelectedChat();
     dispatch(ChangeSelectedChat());
     dispatch(ChatFetcher(config));

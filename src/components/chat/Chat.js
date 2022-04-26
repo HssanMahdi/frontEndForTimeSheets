@@ -160,10 +160,14 @@ export default function Chat(props) {
                           className="clearfix"
                           onClick={() => changeSelectedChat1(chat)}
                         >
+                          {chat.employees?.map((employee, index) => (
+                            employee._id !== EmployeeReducer.connectedEmployee._id ? (
                           <img
-                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                          key={index}
+                            src={employee.images}
                             alt="avatar"
-                          />
+                          />):null
+                          ))}
                           <div className="about">
                             {chat.employees?.map((employee, index) => (
                               <React.Fragment key={index}>
@@ -191,7 +195,7 @@ export default function Chat(props) {
                         onClick={() => changeSelectedChat1(chat)}
                       >
                         <img
-                          src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                          src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg?fbclid=IwAR2PGk8pKz8LIGKpG1d3Y2Z-gXOoZeY8w7E2leuZNGDctvWZB0mpLuOc0DM"
                           alt="avatar"
                         />
                         <div className="about">
