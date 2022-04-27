@@ -11,4 +11,6 @@ Now we’re getting into some of the more complex problems of managing remote te
 After an in-depth study of the existing applications on the market, They tend to have their cons.
 
 While the market need is very big all of these applications are limited they focus only on Time Tracking , Team management and Project management. We aim to satisfy those needs by creating the perfect platform which contains added modules like payroll Management , activity monitoring , file storage service , leave management and an integrated chat.
+
+
 ![logo](https://user-images.githubusercontent.com/79610408/165441429-e3dd83ec-0df5-4c22-a7a2-f54eebc7b6cc.png)
