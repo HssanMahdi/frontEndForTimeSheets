@@ -1,21 +1,26 @@
 import React, {useEffect, useState} from 'react'
 import { useHistory } from "react-router-dom";
 import './Project.css'
-// import ProjectForm from './addProject/ProjectForm'
-// import UpdateProject from './updateProject/UpdateProject'
-// import Popup from './Popup'
-// import PopupUpdate from './PopupUpdate'
-
+import UpdateProject from './updateProject/UpdateProject'
+import Popup from './Popup'
+import PopupUpdate from './PopupUpdate'
+import AddProject from './addProject/AddProject'
 import axios from "axios";
 export default function Project(props) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null)
     const [technologies, setTechnologies] = useState([]);
     const [buttonPopup, setButtonPopup] = useState(false);
     const [buttonPopupUpdate, setButtonPopupUpdate] = useState(false);
     const [projectList, setProjectList] = useState([]);
+    const [startD,setStartD]=useState()
+    const [endD,setEndD]=useState()
+    const [inProgress, setInProgress] = useState([]);
+    const [upcoming, setUpcoming] = useState([]);
+    const [finished, setFinished] = useState([]);
+
+
+
 
 
     useEffect(
@@ -24,33 +29,48 @@ export default function Project(props) {
         }, [])
 
     const getAllProjects = async () => {
+        var startD=""
+        var endD=""
+        var tab = []
         await axios.get("/projects/").then(
             (response) => {
-                setProjectList(response.data)
-                //setName(response[0].name)
-            }
-        );
+                setProjectList(response.data.projects)
+                setUpcoming(response.data.upcomingFinal)
+                setInProgress(response.data.inProgressFinal)
+                setFinished(response.data.finishedFinal)
+                console.log(response.data.startDate)
+                for(let i=0;i<response.data.projects.length;i++){
+                    startD=response.data.projects[i].startDate.split("T")
+                    setStartD(startD[0])
+                    endD=response.data.projects[i].endDate.split('T');
+                    setEndD(endD[0])
+                }
+
+            });
     }
 
     let history = useHistory();
 
     function updateProject(id)
     {
-
         console.log(id)
-        /*history.push({
+        history.push({
             pathname: '/updateProject',
-            state: { detail: id }*/
-        //});
-        // props.history.push('/updateProject/'+id)
+            state: { detail: id }
+        })
     }
-
+ function searchEmployees(id){
+     console.log("fromProject",id)
+     history.push({
+         pathname: '/searchEmployees',
+         state: { detail: id }
+     });
+ }
     function detailsProject(id){
         history.push({
             pathname: '/detailsProject',
             state: { detail: id }
         });
-        console.log("from project",id)
     }
     const deleteProject = async (_id) => {
         await axios.delete(
@@ -60,12 +80,8 @@ export default function Project(props) {
                     setProjectList(response.data)
                 }
             );
-            console.log("deleted")
         })
             .catch(err => console.log(err))
-
-
-        console.log(_id)
     };
 
 
@@ -77,7 +93,6 @@ export default function Project(props) {
     return (
         <main>
             <div className="main__container">
-
                 <div className="app-container">
                     <div className="app-header">
                         <div className="app-header-left">
@@ -95,9 +110,6 @@ export default function Project(props) {
                             </div>
                         </div>
                         <div className="app-header-right">
-                            {/* <button className="mode-switch" title="Switch Theme">
-            </button> */}
-
                             <button className="add-btn" title="Add New Project" onClick={() => setButtonPopup(true)}>
                                 <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" width={16} height={16}
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}
@@ -117,21 +129,24 @@ export default function Project(props) {
                             <div className="projects-section-line">
                                 <div className="projects-status">
                                     <div className="item-status">
-                                        <span className="status-number">45</span>
+                                             <span className="status-number">{inProgress?.length}</span>
                                         <span className="status-type">In Progress</span>
                                     </div>
                                     <div className="item-status">
-                                        <span className="status-number">24</span>
+                                        <span className="status-number">{upcoming?.length}</span>
                                         <span className="status-type">Upcoming</span>
                                     </div>
                                     <div className="item-status">
-                                        <span className="status-number">62</span>
-                                        <span className="status-type">Total Projects</span>
+                                        <span className="status-number">{finished?.length}</span>
+                                        <span className="status-type">Finished</span>
+                                    </div>
+                                    <div className="item-status">
+                                        <span className="status-number">{projectList?.length}</span>
+                                        <span className="status-type">Total</span>
                                     </div>
                                 </div>
                                 <div className="view-actions">
                                     {/*<button  className="add-btn"    onClick={() => setButtonPopup(true)}> </button>*/}
-
                                     <button className="view-btn list-view" title="List View">
                                         <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24}
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
@@ -159,17 +174,14 @@ export default function Project(props) {
                                 </div>
                             </div>
                             <div className="project-boxes jsGridView">
-                                {projectList.map((proj, key) => {
+                                {projectList?.map((proj, key) => {
                                     return <div className="project-box-wrapper">
                                         <div className="project-box" style={{backgroundColor: '#e9e7fd'}}>
-                                            <div className="project-box-header" key={proj._id}>
+                                            <div className="project-box-header" key={proj?._id}>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
-                                                    Start: {proj.startDate}
+                                                    Start: {startD}
                                                 </div>
-                                                <button onClick={() => {
-                                                            detailsProject(proj._id)
-                                                        }}> details</button>
-                                                {/* <div className="dropdown">
+                                                <div className="dropdown">
                                                     <button type="button" className="btn btn-primary dropdown-toggle"
                                                             data-toggle="dropdown">
                                                     </button>
@@ -178,35 +190,25 @@ export default function Project(props) {
                                                              onClick={() => deleteProject(proj._id)}>
                                                             <i className="fa fa-times" aria-hidden="true"></i> delete
                                                         </div>
-                                                        <div className="dropdown-item" ><i className="fa fa-pencil" aria-hidden="true">edit</i></div>
                                                         <div className="dropdown-item" onClick={() => {
-                                                            detailsProject(proj._id)
-                                                        }}>   <i className="fa fa-arrow-circle-o-right"
+                                                            updateProject(proj._id)
+                                                        }}><i className="fa fa-pencil" aria-hidden="true">edit</i></div>
+                                                        <div className="dropdown-item" onClick={() => {
+                                                            detailsProject(proj._id)}}>
+                                                            <i className="fa fa-arrow-circle-o-right"
                                                                  aria-hidden="true"></i> more details</div>
+                                                        <div className="dropdown-item"  onClick={() => {
+                                                            searchEmployees(proj._id)}}>
+                                                            <i className='fa fa-search'>  Employees</i>
+                                                        </div>
+
                                                     </div>
-                                                </div> */}
+                                                </div>
                                             </div>
                                             <div className="project-box-content-header">
-                                                <p className="box-content-header">{proj.projectName}</p>
-                                                <p className="box-content-subheader">{proj.description}</p>
+                                                <p className="box-content-header">{proj?.projectName}</p>
+                                                <p className="box-content-subheader">{proj?.description}</p>
                                             </div>
-                                            <div className="row">
-                                                <p className="box-progress-header ">Project leader:{proj?.projectLeader === null ? (
-                                                    <button className="add-participant " style={{color: '#4f3ff0'}}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12}
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             strokeWidth={3} strokeLinecap="round"
-                                                             strokeLinejoin="round" className="feather feather-plus">
-                                                            <path d="M12 5v14M5 12h14"/>
-                                                        </svg>
-                                                    </button>
-                                                ) : (
-                                                    proj?.projectLeader
-                                                )}
-                                                </p>
-                                            </div>
-
-
                                             <div className="box-progress-wrapper">
                                                 <p className="box-progress-header">Progress</p>
                                                 <div className="box-progress-bar">
@@ -223,17 +225,16 @@ export default function Project(props) {
                                                     <img
                                                         src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2555&q=80"
                                                         alt="participant"/>
-                                                    <button className="add-participant" style={{color: '#4f3ff0'}}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12}
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             strokeWidth={3} strokeLinecap="round"
-                                                             strokeLinejoin="round" className="feather feather-plus">
-                                                            <path d="M12 5v14M5 12h14"/>
-                                                        </svg>
-                                                    </button>
+                                                    <p className="box-progress-header ">{proj?.projectLeader === null ? (
+                                                    <span style={{color:"red"}}> add one</span>
+                                                ) : (
+                                                    <span style={{color:"green"}}>  {proj?.projectLeader?.userName}</span>
+
+                                                )}
+                                                </p>
                                                 </div>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
-                                                    End : {proj.endDate}
+                                                    End : {endD}
                                                 </div>
                                             </div>
                                         </div>
@@ -242,7 +243,12 @@ export default function Project(props) {
                             </div>
                         </div>
                     </div>
-                  
+                    <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+                        <AddProject></AddProject>
+                    </Popup>
+                    <PopupUpdate trigger={buttonPopupUpdate} setTrigger={setButtonPopupUpdate}>
+                        <UpdateProject></UpdateProject>
+                    </PopupUpdate>
 
 
                 </div>

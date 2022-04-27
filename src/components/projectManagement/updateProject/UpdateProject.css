@@ -11,263 +11,90 @@ main {
     padding: 20px 35px;
 }
 
-.one-o {
-    width: 270px;
-    background-color: #000;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.pic1-o {
-    position: relative;
-    right: 22px;
-    top: 23px;
-}
-
-.pic2-o {
-    position: relative;
-    left: 25px;
-    top: 17px;
-}
-
-.pic3-o {
-    position: relative;
-    right: 13px;
-    bottom: 18px;
-}
-
-.pic4-o {
-    position: relative;
-    left: 14px;
-    bottom: 21px;
-}
-
-.project-o {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 600;
-    color: #fd4040;
-}
-
-.quote-o {
-    text-align: center;
-    font-size: 12px;
-    font-weight: 400;
-    color: #fff;
+:root {
+    --input-padding-x: .75rem;
+    --input-padding-y: .65rem;
 }
 
 
 
-.star-o {
-    font-size: 20px !important;
-    color: #b1b4b7;
-}
-
-.dot-o {
-    font-size: 20px !important;
-    color: #b1b4b7;
-}
-
-.round-o {
-    border-radius: 50%;
-    background-color: #eee;
-    width: 33px;
-    height: 33px;
-    margin-bottom: -10px;
-    align-items: center;
-    justify-content: center;
-}
-
-.name-o {
-    font-size: 22px;
-    color: #464e56;
-    font-weight: 600;
-    text-align: left;
-}
-
-.quote2-o {
-    font-size: 12px;
-    font-weight: 500;
-    color: #868e94;
-    text-align: left;
-}
-
-.img1-o {
-    position: relative;
-    left: 20px;
-    z-index: 28;
-    border: 0.5px solid #6ebde4;
-    border-radius: 50%;
-    background-color: #bcd8e6;
-}
-
-.img2-o {
-    position: relative;
-    left: 10px;
-    z-index: 29;
-    border: 0.5px solid #6ebde4;
-    border-radius: 50%;
-    background-color: #bcd8e6;
-}
-
-.img3-o {
-    z-index: 30;
-    border: 0.5px solid #6ebde4;
-    border-radius: 50%;
-    background-color: #bcd8e6;
-}
-
-.task-o {
-    color: #727475;
-}
-
-.date-o {
-    color: #727475;
-}
-
-
-*,
-*:before,
-*:after {
-    box-sizing: border-box;
-}
 body {
-    background-color: #e1e3e5;
-}
-.container-o {
-    background-color: #fff;
-}
-.CriticalActions-o {
-    margin: 0 -15px 15px;
-    padding: 15px;
-    background-color: #f0f8ff;
-}
-.commitment-task-cards-o {
+    display: -ms-flexbox;
+    display: -webkit-box;
     display: flex;
-    flex-wrap: wrap;
-}
-.commitment-task-card-o {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
-    background-color: #fff;
-    box-shadow: 0 6px 12px -5px #1b374f;
-}
-.commitment-task-card.complete-o {
-    border-left: 4px solid #347ec0;
-    background-color: #d2e6f6;
-}
-.commitment-task-card.complete-o .btn-default {
-    background-color: #a9cdec;
-    border-color: #80b2e0;
-}
-.commitment-task-card-o:not(:last-child) {
-    margin-right: 15px;
-}
-.commitment-task-card-header-o {
-    border-bottom: 1px solid #e1e3e5;
-    padding: 0 15px 8px;
-}
-.commitment-task-card-title-o {
-    margin-bottom: 0;
-    font-weight: 700;
-}
-.commitment-task-due-date-o {
-    font-size: 10px;
-    color: #ef5425;
-    padding: 4px 0 0;
-    margin-bottom: 0;
-}
-.commitment-task-type-o {
-    display: block;
-    color: #92a83b;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-}
-.commitment-task-card-body-o {
-    padding: 15px;
-    flex: 1 1 auto;
-}
-
-.commitment-task-card-footer-o {
-    display: flex;
-    justify-content: space-between;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
     align-items: center;
-    padding: 8px 15px;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
 }
 
-.commitment-help-link-o {
-    padding: 3px;
-    color: #6a737b;
-    font-size: 0.8em;
-}
-.commitment-help-link-o:hover {
-    text-decoration: none;
-}
-
-.d-flex {
-    display: flex;
-}
-.text_pad-o {
-    color: #0e32fb;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-.text_pad-o > i {
-    display: inline;
-}
-
-
-
-.todo-list {
-    background: #fff;
-    font-size: 20px;
-    max-width: 15em;
-    margin: auto;
-    padding: 0.5em 1em;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
-}
-
-.todo {
-    display: block;
-    position: relative;
-    padding: 1em 1em 1em 16%;
+.form-signin {
+    width: 100%;
+    max-width: 420px;
+    padding: 15px;
     margin: 0 auto;
-    cursor: pointer;
-    border-bottom: solid 1px #ddd;
 }
 
-.todo__icon {
+.form-label-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.form-label-group > input,
+.form-label-group > label {
+    padding: var(--input-padding-y) var(--input-padding-x);
+    height: 45px;
+}
+
+.form-label-group > label {
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 0;
+    display: block;
     width: 100%;
-    height: auto;
-    margin: auto;
-
-    fill: none;
-    stroke: #27fdc7;
-    stroke-width: 2;
-    stroke-linejoin: round;
-    stroke-linecap: round;
+    margin-bottom: 0; /* Override default `<label>` margin */
+    line-height: 1.5;
+    color: #495057;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    transition: all .1s ease-in-out;
 }
 
-.todo__line {
-    stroke-dasharray: 168, 1684;
-    stroke-dashoffset: 168;
+.form-label-group input::-webkit-input-placeholder {
+    color: transparent;
 }
 
+.form-label-group input:-ms-input-placeholder {
+    color: transparent;
+}
 
- .todo__text {
-    transition-delay: 0s;
-    color: #5ebec1;
-    opacity: 0.6;
+.form-label-group input::-ms-input-placeholder {
+    color: transparent;
+}
+
+.form-label-group input::-moz-placeholder {
+    color: transparent;
+}
+
+.form-label-group input::placeholder {
+    color: transparent;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+    padding-top: calc(var(--input-padding-y) + var(--input-padding-y) * (2 / 3));
+    padding-bottom: calc(var(--input-padding-y) / 3);
+}
+
+.form-label-group input:not(:placeholder-shown) ~ label {
+    padding-top: calc(var(--input-padding-y) / 3);
+    padding-bottom: calc(var(--input-padding-y) / 3);
+    font-size: 12px;
+    color: #777;
 }
 
 body {
@@ -276,7 +103,8 @@ body {
     font-family: "Varela Round", sans-serif;
     font-size: 13px;
 }
-.table-wrapper {
+
+table-wrapper {
     background: #fff;
     padding: 20px 25px;
     margin: 30px 0;
@@ -493,6 +321,5 @@ table.table .avatar {
 .modal form label {
     font-weight: normal;
 }
-
 
 
