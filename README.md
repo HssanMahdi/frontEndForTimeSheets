@@ -1,70 +1,14 @@
-# Getting Started with Create React App
+# Time Sheets
+Before the days of Skype and Zoom calls, a NASA engineer by the name of Jack Nilles laid the foundation for modern remote working when he coined the term "telecommuting" in 1973. What may have seemed a fad when it first came about is now the norm. According to a Gartner survey, 74% of businesses are planning on shifting their employees to remote positions as part of their post-COVID plans. 
+It’s no secret that working away from the office is increasingly more popular. Six out of 10 companies offer their workers the chance to telecommute and 43% of all employees work remotely at least some of the time, according to the latest workplace statistics from Gallup.
+Remote work has seen a boom of 115% in the last decade and it has been becoming more and more popular in the last few years.
+Studies have found remote workers are more productive, healthier, and enjoy a more positive work-life balance. The benefits for workers and businesses alike are driving a workplace revolution.
+Remote work may be more common than it used to be, but it still comes with its challenges.
+Researchers tracked the activity of more than 10,000 employees at an Asian services company between April 2019 and August 2020 and found that they were working 30 % more untracked hours than they were before the pandemic and 18 % more unpaid overtime hours and that means they are working more and paid less than expected so there is a problem of time tracking and a problem with the payroll.
+The most common challenge remote teams report in studies is collaborating and communicating from different locations, teamwork feels fragmented and uneasy.
+Now we’re getting into some of the more complex problems of managing remote teams. To hit big targets, you’ve got to make sure all the smaller tasks are getting completed in a timely manner. Managers must keep track of progress on individual tasks while also keeping a keen eye on project-wide progress.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+After an in-depth study of the existing applications on the market, They tend to have their cons.
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+While the market need is very big all of these applications are limited they focus only on Time Tracking , Team management and Project management. We aim to satisfy those needs by creating the perfect platform which contains added modules like payroll Management , activity monitoring , file storage service , leave management and an integrated chat.
+![logo](https://user-images.githubusercontent.com/79610408/165441429-e3dd83ec-0df5-4c22-a7a2-f54eebc7b6cc.png)
