@@ -134,8 +134,8 @@ function getCurYear(){
                             <th>Month</th>
                             <th>Year</th>
                             <th>This month Additions</th>
-                            <th>This month Overtime</th>
-                            <th>Today worked Hours</th>
+                            <th>This month Overtime (Min)</th>
+                            <th>Today worked Time (Min)</th>
                             <th>This Month Salary</th>
                             <th className="text-right"><button onClick={refresh}  style={{
                                 backgroundPosition: 'center',
