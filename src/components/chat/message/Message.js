@@ -181,9 +181,6 @@ export default function Message(props) {
       socket.emit("new message", data);
       setMessages([...messages, data]);
       dispatch(ChatFetcher(config));
-      if (ref.current !== null) {
-        ref.current.scrollIntoView({ behavior: "smooth" });
-      }
     }
   };
   useEffect(() => {
