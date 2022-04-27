@@ -16,7 +16,6 @@ import {
 import moment from "moment";
 // const socket = io.connect("http://localhost:3001");
 var socket;
-
 export default function Message(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const history = useHistory();
@@ -94,7 +93,7 @@ export default function Message(props) {
 
   useEffect(() => {
     setSelectedChat(EmployeeReducer.selectedChat);
-    fetchMessages();
+    // fetchMessages();
     displayedChanger();
     setNewMessage("");
     setIsTyping(false);
@@ -195,20 +194,30 @@ export default function Message(props) {
     socket.on("connection", setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-    socket.on("message recieved", (newMessageRecieved) => {
-      console.log("chatnewmessage : ",newMessageRecieved.chat)
-      console.log("chat selected : ",EmployeeReducer.selectedChat._id)
-      if (
-        !EmployeeReducer.selectedChat._id || // if chat is not selected or doesn't match current chat
-        EmployeeReducer.selectedChat._id !== newMessageRecieved.chat._id
-      ) {
-        return;
-      } else {
-        setMessages([...messages, newMessageRecieved]);
-      }
-    });
   }, []);
 
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      // console.log("chatnewmessage : ",newMessageRecieved)
+      // console.log("chat selected : ",EmployeeReducer.selectedChat._id)
+      if (typeof (EmployeeReducer.selectedChat) === "undefined") {
+        return;
+      } else {
+        if (EmployeeReducer.selectedChat._id === newMessageRecieved.chat._id
+        ) {
+          setMessages([...messages, newMessageRecieved]);
+        }
+      }
+      // if (
+      //   !EmployeeReducer.selectedChat._id || // if chat is not selected or doesn't match current chat
+      //   EmployeeReducer.selectedChat._id !== newMessageRecieved.chat._id
+      // ) {
+      //   return;
+      // } else {
+      //   setMessages([...messages, newMessageRecieved]);
+      // }
+    });
+  })
   useEffect(() => {
     fetchMessages();
     displayedChanger();
@@ -349,7 +358,7 @@ export default function Message(props) {
                   <li key={i} className="clearfix" ref={ref}>
                     <div className="message-data text-left">
                       <img
-                      style={{marginRight: "8px"}}
+                        style={{ marginRight: "8px" }}
                         src={message.sender.images}
                         alt="avatar"
                       />
@@ -401,7 +410,7 @@ export default function Message(props) {
                     <div className="message-data text-right">
                       <span>{EmployeeReducer.connectedEmployee.userName}</span>
                       <img
-                      style={{marginLeft: "13px"}}
+                        style={{ marginLeft: "13px" }}
                         src={EmployeeReducer.connectedEmployee.images}
                         alt="avatar"
                       />
