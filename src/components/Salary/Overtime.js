@@ -68,9 +68,9 @@ function PayrollItems() {
                                 <table className="table table-hover table-radius">
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Rate</th>
-                                        <th>Company working hours</th>
+                                        <th>Type of work day</th>
+                                        <th>Over Time hours price</th>
+                                        <th>Normal working hours per day</th>
                                         <th className="text-right">Action</th>
                                     </tr>
                                     </thead>
@@ -78,7 +78,7 @@ function PayrollItems() {
                                     {overtime.map((item)=>
                                         <tr>
                                             <th>{item.name}</th>
-                                            <td>Hourly {item.hourlyRate}</td>
+                                            <td>Employee hour price x {item.hourlyRate}</td>
                                             <td>{item.working_hours_per_day} Hour</td>
                                             <td className="text-right">
                                                 <Button

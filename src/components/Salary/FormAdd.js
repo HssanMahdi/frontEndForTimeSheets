@@ -21,9 +21,10 @@ function FormAdd() {
     const [overtime, setOvertime] = useState("");
     const [deductions, setDeductions] = useState("");
     const [totalSalary, setTotalSalary] = useState("");
+    const [userName, setUserName] = useState("");
     const [allemployees,setAllemployees]=useState([]);
     function addSalary() {
-        let data = {employees, month, year, addition, overtime, deductions, totalSalary}
+        let data = {employees, month, year, addition, overtime, deductions, totalSalary,userName}
         fetch("/salarys/add", {
             method: "POST",
             headers: {
@@ -58,18 +59,33 @@ function FormAdd() {
             />
             <h2 style={{textAlign: "center", color: "#1e90ff"}}>ADD SALARY</h2>
             <div>
-                <label htmlFor="Inputemployee">Employee</label>
+                <label htmlFor="Inputemployee">Employee ID</label>
                 <select type="text" className="form-control" placeholder="Employee ID" name="employee" value={employees}
                        onChange={(e) => {
                            setEmployees(e.target.value)
                        }}>
-                    <option>--Select Employee--</option>
+                    <option>--Select Employee ID--</option>
                     {   allemployees.map(emp=>
-                        <option value={emp._id}>{emp.userName}</option>
+                        <option value={emp._id}>{emp._id}:({emp.userName})</option>
                     )
                     }
                 </select>
             </div>
+
+            <div>
+                <label htmlFor="Inputemployname">Employee </label>
+                <select type="text" className="form-control" placeholder="Employee " name="employeee" value={userName}
+                        onChange={(e) => {
+                            setUserName(e.target.value)
+                        }}>
+                    <option>--Select Employee--</option>
+                    {   allemployees.map(emp=>
+                        <option value={emp.userName}>{emp.userName}</option>
+                    )
+                    }
+                </select>
+            </div>
+
 
             <div>
                 <label htmlFor="InputMonth">Month</label>

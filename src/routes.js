@@ -32,6 +32,9 @@ const MakeGroupCall = React.lazy(() =>
 const SearchGoogle = React.lazy(() =>
   import("./components/searchGoogle/SearchGoogle")
 );
+const EmpLeaves = React.lazy(() => import("./components/leaves/empLeaves"));
+const AdminLeaves = React.lazy(() => import("./components/leaves/adminLeaves"));
+const Add_leaves = React.lazy(() => import("./components/leaves/Forms/addLeave"));
 
 const routes = [
   { path: "/", exact: true, name: "Login" },
@@ -57,6 +60,9 @@ const routes = [
   { path: '/add_deduction', name: 'add_deduction',component: Add_deduction  },
   { path: '/home/holidays', name: 'holidays',component: Holiday  },
   { path: '/add_holiday', name: 'add_holiday',component: Add_holiday  },
+  { path: '/home/emp_leaves', name: 'emp_leaves',component: EmpLeaves  },
+  { path: '/home/admin_leaves', name: 'admin_leaves',component: AdminLeaves  },
+  { path: '/add_leaves', name: 'add_leaves',component:Add_leaves  },
 { path: "/detailsProject", name: 'updateProject', component: DetailsProject },
   {
     path: "/home/projectPlanning",

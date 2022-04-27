@@ -105,19 +105,15 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             <h3 className="text_pad">LEAVE</h3>
             <div className="sidebar__link">
               <i className="fa fa-question"></i>
-              <a href="#">Requests</a>
+              <Link to={"/home/admin_leaves"}>Leave Requests</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-sign-out"></i>
-              <a href="#">Leave Policy</a>
+              <Link to={"/home/emp_leaves"}>Leaves </Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-calendar"></i>
               <Link to="/home/holidays">Holidays</Link>
-            </div>
-            <div className="sidebar__link">
-              <i className="fa fa-files-o"></i>
-              <a href="#">Apply for leave</a>
             </div>
             <h3 className="text_pad">PAYROLL</h3>
             <div className="sidebar__link">
