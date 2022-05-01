@@ -119,7 +119,7 @@ export default function Navbar({ sidebarOpen, openSidebar }) {
         "EmployeeReducer.checkPresence : ",
         EmployeeReducer.checkPresence
       );
-    }, 900000); //900000 every 15 mins
+    }, 1000); //900000 every 15 mins
   };
 
   function Item(props) {

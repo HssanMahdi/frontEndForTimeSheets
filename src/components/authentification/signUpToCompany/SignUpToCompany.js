@@ -22,7 +22,8 @@ export default function SignUpToCompany(props) {
         company: "",
         confirmPassword: "",
         todaysWorkedHours: 0,
-        hourPrice: 0,
+		leavesLeft: 18,
+		leavesTaken: 0,
         totalWorkedHours: 0,
         hourPrice: 15,
         overTimeHours: 0
