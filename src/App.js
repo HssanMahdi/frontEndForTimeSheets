@@ -27,7 +27,11 @@ export default function App() {
   const VideoChat = React.lazy(() =>
     import("./components/videoCall/VideoCall")
   );
+  const FaceId = React.lazy(() =>
+    import("./components/authentification/faceId/faceId")
+  );
   const Test = React.lazy(() => import("./components/test/Test"));
+  const NotFound = React.lazy(() => import("./components/NotFound/NotFound"));
   return (
     <BrowserRouter>
       <React.Suspense fallback={loading}>
@@ -39,16 +43,25 @@ export default function App() {
             render={(props) => <Login {...props} />}
           />
           <Route
+            exact
+            path="/faceid"
+            name="faceid"
+            render={(props) => <FaceId {...props} />}
+          />
+          <Route
+            exact
             path="/forgetpassword"
             name="forgetPassword"
             render={(props) => <ForgetPassword {...props} />}
           />
           <Route
+            exact
             path="/resetpassword"
             name="resetPassword"
             render={(props) => <ResetPassword {...props} />}
           />
           <Route
+            exact
             path="/signup/:token"
             name="signuptocompany"
             render={(props) => <SignUpToCompany {...props} />}
@@ -63,16 +76,17 @@ export default function App() {
             name="employees"
             render={(props) => <Employees {...props} />}
           />
-          <Route
-            path="/videocall"
+          {/* <Route
+            path="/videocall/:roomID"
             name="VideoCall"
             render={(props) => <VideoChat {...props} />}
-          />
+          /> */}
           <Route
             path="/test"
             name="test"
             render={(props) => <Test {...props} />}
           />
+          <Route component={NotFound} />
         </Switch>
       </React.Suspense>
     </BrowserRouter>

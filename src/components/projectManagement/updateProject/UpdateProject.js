@@ -45,7 +45,6 @@ export default function UpdateProject(props) {
             }).catch(err => console.error(err))
     },[]);
 
-
     /* const handleChange1 = (e) => {
          const {name, checked} = e.target;
          let tempUser = technologies.map((technologie) =>
@@ -159,21 +158,21 @@ async function submit(e) {
         </Form>
 */
         <main>
-            <div className="main__container">
+            <div className="main__container-oo">
                 <div className="col-lg-12 col-md-10 mx-auto ">
-                    <form className="form-signin" onSubmit={submit}>
+                    <form className="form-signin-oo" onSubmit={submit}>
                         <div className="text-center mb-4">
                             <IconAvatars></IconAvatars>
                             <h4 style={{textDecoration: 'underline'}}> Update project</h4>
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-oo">
                             <label htmlFor="inputEmail4" className="badge badge-primary">project name</label>
                             <input type="text" id="inputEmail4" className="form-control"   name="projectName"
                                    defaultValue={data.projectName}
                                    onChange={handle}
                             />
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-oo">
                             <label htmlFor="inputEmail4" className="badge badge-primary">project description</label>
                             <input type="text" id="inputEmail4" className="form-control"
                                    autoFocus
@@ -181,14 +180,14 @@ async function submit(e) {
                                    onChange={handle}
                             />
                         </div>
-                       <div className="form-label-group">
+                       <div className="form-label-group-oo">
                             <label htmlFor="inputPassword4" className="badge badge-primary">start date</label>
                             <input type="date" id="inputPassword4" className="form-control"
                                    defaultValue={newdate}
                                    onChange={handle}
                             />
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-oo">
                             <label htmlFor="inputPassword4" className="badge badge-primary">end date</label>
                             <input type="date" id="inputPassword4" className="form-control"
                                    defaultValue={endDate}

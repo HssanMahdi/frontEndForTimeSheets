@@ -53,12 +53,12 @@ export default function AddProject() {
         <div className="container">
             <div className="row">
                 <div className="col-lg-6 col-md-7 mx-auto">
-                    <form className="form-signin" onSubmit={handleSubmit}>
+                    <form className="form-signin-o" onSubmit={handleSubmit}>
                         <div className="text-center mb-4">
                             <IconAvatars></IconAvatars>
                             <h4 style={{textDecoration: 'underline'}}> add new project</h4>
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-o">
                             <label htmlFor="inputEmail4" className="badge badge-primary">project name</label>
 
                             <input type="text" id="inputEmail4" className="form-control" placeholder="project name" required
@@ -70,7 +70,7 @@ export default function AddProject() {
                                    }}
                             />
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-o">
                             <label htmlFor="inputEmail4" className="badge badge-primary">project description</label>
 
                             <input type="text" id="inputEmail4" className="form-control" placeholder="description" required
@@ -81,7 +81,7 @@ export default function AddProject() {
 
                                    }}/>
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-o">
                             <label htmlFor="inputPassword4" className="badge badge-primary">start date</label>
                             <input type="date" id="inputPassword4" className="form-control" placeholder="Password"
                                    required
@@ -90,7 +90,7 @@ export default function AddProject() {
                                        setStartDate(event.target.value)
                                    }}/>
                         </div>
-                        <div className="form-label-group">
+                        <div className="form-label-group-o">
                             <label htmlFor="inputPassword4" className="badge badge-primary">end date</label>
 
                             <input type="date" id="inputPassword4" className="form-control" placeholder="Password"
@@ -101,16 +101,18 @@ export default function AddProject() {
                                    }}/>
                         </div>
                             <div className="col-form-label-sm"><h6 className="badge badge-primary"> choisir technologies</h6> </div>
-                            <ul className="checkbox-grid">
+                            <ul className="checkbox-grid-o">
                             {technologies.map((t, index) => (
                                 <li>
-                                    <label className="form-check-label"> {t.name}
-                                    <input type="checkbox"className="checkbox-circle"
+                                    <div className="form-group1-o">
+                                    <label  mlFor={t.name} className="form-check-label"> {t.name}
+                                    <input type="checkbox"
                                            name={t.name}
                                            checked={t?.isChecked || false}
                                            onChange={handleChange1}
                                     />
                                 </label>
+                                </div>
                                 </li>
                                 ))}
                             </ul>

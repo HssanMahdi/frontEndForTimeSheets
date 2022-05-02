@@ -1,35 +1,43 @@
 import "./Sidebar.css";
 import logo from "../../assets/logo.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { v1 as uuid } from "uuid";
+import pathToRegexp from "path-to-regexp";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidV4} from 'uuid';
 const socket = io.connect("http://localhost:3001");
 
 export default function Sidebar({ sidebarOpen, closeSidebar }) {
   const { EmployeeReducer } = useSelector((state) => state);
-  const [path, setPath] = useState(false);
+  const [path, setPath] = useState(true);
   const dispatch = useDispatch();
   const location = useLocation();
+  const history = useHistory();
+  const re = pathToRegexp("/home/makecall/:roomID");
+  const result = re.exec(location.pathname);
+  const rev = pathToRegexp("/home/videocall/:roomID");
+  const resultv = rev.exec(location.pathname);
+  var idRoom, idRoomCall;
+  function create() {
+    const id = uuid();
+    history.push(`/home/makecall/${id}`);
+  }
+  idRoom = result?.[1];
+  idRoomCall = resultv?.[1];
+
   useEffect(() => {
-    if (location.pathname === "/home/videocall") {
+    if (
+      location.pathname === `/home/videocall/${idRoomCall}` ||
+      location.pathname === "/home/groupcall" ||
+      location.pathname === `/home/makecall/${idRoom}`
+    ) {
       setPath(true);
+    } else {
+      setPath(false);
     }
   });
-  useEffect(() => {
-
-    setTimeout(() => {
-      socket.emit("persistIdEmployee", {
-        me: socket.id,
-        name: EmployeeReducer.connectedEmployee.userName,
-        id: EmployeeReducer.connectedEmployee._id,
-      });
-      dispatch({
-        type: "SOCKET",
-        payload: socket,
-      });
-    }, 1000)
-  }, []);
   return (
     <>
       {!path ? (
@@ -66,7 +74,7 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             </div>
             <div className="sidebar__link">
               <i className="fa fa-building-o"></i>
-              <a href="#">Project Management</a>
+              <Link to="/project">Project Management</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-archive"></i>
@@ -75,12 +83,24 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
 
             <div className="sidebar__link">
               <i className="fa fa-calendar"></i>
-              <Link to="/Calendar">Calendar</Link>
+              <Link to="/home/Calendar">Calendar</Link>
             </div>
+            <div className="sidebar__link">
+                    <i className="fa fa-file"></i>
+                    <Link to={`/home/FileEdit/documents/${uuidV4()}`}>File Editor</Link> 
+                </div>
+                <div className="sidebar__link">
+                    <i className="fa fa-archive"></i>
+                    <Link to={"/home/fileUploader"}>File Uploader</Link> 
+                </div>
             <h3 className="text_pad">CHAT</h3>
             <div className="sidebar__link">
               <i className="fa fa-book"></i>
               <Link to={"/home/chat"}>Messages</Link>
+            </div>
+            <div className="sidebar__link">
+              <i className="fa fa-book"></i>
+              <a onClick={create}>Group Call</a>
             </div>
             <h3 className="text_pad">LEAVE</h3>
             <div className="sidebar__link">
@@ -93,7 +113,7 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             </div>
             <div className="sidebar__link">
               <i className="fa fa-calendar"></i>
-              <a href="#">Special Days</a>
+              <Link to="/home/holidays">Holidays</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-files-o"></i>
@@ -102,12 +122,16 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
             <h3 className="text_pad">PAYROLL</h3>
             <div className="sidebar__link">
               <i className="fa fa-money"></i>
-              <a href="#">Payroll</a>
+              <Link to="/home/employee_salary">Employee Salary</Link>
             </div>
             <div className="sidebar__link">
               <i className="fa fa-briefcase"></i>
-              <a href="#">Paygrade</a>
+              <Link to="/home/payroll_items">Payroll Items</Link>
             </div>
+            <div className="sidebar__logout">
+                    <i className='fa fa-star'></i>
+                    <Link to="/rating">Add Reviews</Link>
+                </div>
             <div className="sidebar__logout">
               <i className="fa fa-power-off"></i>
               <a href="#">Log out</a>

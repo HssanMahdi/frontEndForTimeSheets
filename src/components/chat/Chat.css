@@ -35,8 +35,13 @@ main {
   font-weight: 700;
   color: #a5aaad;
 }
-
-.card {
+.emoji-picker-react{
+  
+      position: absolute !important ;
+       top: 247px
+    }
+  
+.cardCHAT {
   background: #fff;
   transition: 0.5s;
   border: 0;
@@ -44,11 +49,15 @@ main {
   border-radius: 0.55rem;
   position: relative;
   width: 100%;
+  /* max-height: 896px !important;
+  height: 721px; */
+  height: 100%;
+  min-height: 549px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
 }
 .scrollbar-card {
-  height: 539px;
-  overflow-y: scroll;
+  height: 495px;
+  overflow-y: auto;
 }
 #listItems {
   margin-left: 23px;
@@ -102,7 +111,7 @@ ul#test2 {
   padding: 10px 15px;
   list-style: none;
   border-radius: 3px;
-  width: 302px;
+  width: 279px;
 }
 
 .people-list .chat-list li:hover {
@@ -123,6 +132,7 @@ ul#test2 {
 
 .people-list .chat-list img {
   width: 45px;
+  height: 45px;
   border-radius: 50%;
 }
 
@@ -139,6 +149,10 @@ ul#test2 {
 .people-list .status {
   color: #999;
   font-size: 13px;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat .chat-header {
@@ -291,7 +305,69 @@ ul#test2 {
   text-align: center;
   color: rgb(204, 198, 198);
 }
+.chat-bubble {
+  background-color: #E6F8F1;
+  padding: 16px 28px;
+  -webkit-border-radius: 20px;
+  -webkit-border-bottom-left-radius: 2px;
+  -moz-border-radius: 20px;
+  -moz-border-radius-bottomleft: 2px;
+  border-radius: 20px;
+  border-bottom-left-radius: 2px;
+  display: inline-block;
+}
 
+.typing {
+  align-items: center;
+  display: flex;
+  height: 17px;
+}
+
+.typing .dot {
+  animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
+  background-color: #6CAD96; 
+  border-radius: 50%;
+  height: 7px;
+  margin-right: 4px;
+  vertical-align: middle;
+  width: 7px;
+  display: inline-block;
+}
+
+.typing .dot:nth-child(1) {
+  animation-delay: 200ms;
+}
+
+.typing .dot:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.typing .dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+.typing .dot:last-child {
+  margin-right: 0;
+}
+.image-uploadss input {
+  display: none;
+}
+@keyframes mercuryTypingAnimation {
+  0% {
+    transform: translateY(0px);
+    background-color: #6CAD96;
+  }
+
+  28% {
+    transform: translateY(-7px);
+    background-color: #9ECAB9;
+  }
+
+  44% {
+    transform: translateY(0px);
+    background-color: #B5D9CB; 
+  }
+}
 @media only screen and (max-width: 767px) {
   .chat-app .people-list {
     height: 465px;

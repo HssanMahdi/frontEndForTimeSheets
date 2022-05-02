@@ -4,20 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Login, SignUp } from "../../redux/actions/EmployeeActions";
+import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import * as faceapi from "@vladmandic/face-api";
+import Swal from "sweetalert2";
 
 export default function Authentification() {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [connected, setConnected] = useState(false);
+  const [redirectToFaceId, setRedirectToFaceId] = useState(false);
   const [employeeSignUp, setEmployeeSignUp] = useState({
     userName: "",
     email: "",
     password: "",
     company: "",
     confirmPassword: "",
-    isManager: true
+    isManager: true,
+    todaysWorkedHours: 0,
+    hourPrice: 0,
+    totalWorkedHours: 0,
+    hourPrice: 15,
+    overTimeHours: 0
   });
   const [employeeLogin, setEmployeeLogin] = useState({
     email: "",
@@ -42,7 +50,25 @@ export default function Authentification() {
       history.push("/home");
     }
   }, [EmployeeReducer]);
-
+  useEffect(()=>{
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/model"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/model"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/model"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/model")
+    ])
+  },[])
+  function checkEmail(){
+    if(employeeLogin.email===""){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'In order to use face Id, Please enter your Email first'
+      })
+    }else{
+      setRedirectToFaceId(true)
+    }
+  }
   return (
     <div className="section-g img-back">
       <div className="container">
@@ -94,8 +120,12 @@ export default function Authentification() {
                         <button className="btn-a mt-4" onClick={login}>
                           submit
                         </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button className="btn-a mt-4" onClick={()=>checkEmail()}>
+                          face id
+                        </button>
                         <p className="mb-0 mt-4 text-center">
-                        <Link to={"/forgetpassword"}>Forgot your password?</Link>
+                          <Link to={"/forgetpassword"}>Forgot your password?</Link>
                         </p>
                       </div>
                     </div>
@@ -160,8 +190,8 @@ export default function Authentification() {
                           <i className="input-icon uil uil-lock-alt"></i>
                           {employeeSignUp.password !== employeeSignUp.confirmPassword ? <div> Password must match  </div> : null}
                           {EmployeeReducer.errSignUp ? (
-                          <div>Email already exist</div>
-                        ) : null}
+                            <div>Email already exist</div>
+                          ) : null}
                           <button className="btn-a mt-4" onClick={signUp}>
                             submit
                           </button>
@@ -175,6 +205,14 @@ export default function Authentification() {
           </div>
         </div>
       </div>
+      {redirectToFaceId ? (<
+        Redirect to={{
+          pathname:"/faceid",
+          state:{email : employeeLogin.email}
+        }}
+         />
+      ) : null
+      }
     </div>
   );
 }

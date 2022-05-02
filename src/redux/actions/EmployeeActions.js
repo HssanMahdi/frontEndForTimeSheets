@@ -15,7 +15,6 @@ export const CompanWorkers = (config) => (dispatch) => {
 };
 
 export const Login = (employeeLogin) => async (dispatch) => {
-  // let hour = d.getHours();
   await axios
     .post("/employee/login", employeeLogin)
     .then((result) => {
@@ -80,6 +79,20 @@ export const Logout = (employeeToUpdate, config) => async (dispatch) => {
   });
 };
 
+export const notifications = (notif) => async (dispatch) => {
+  dispatch({
+    type: "NOTIFICATIONS_CHANGE",
+    payload: notif
+  });
+};
+
+export const ChangeSelectedChat = (chat) => async (dispatch) => {
+  dispatch({
+    type: "SELECTEDCHAT_CHANGE",
+    payload: chat
+  });
+};
+
 export const ChatFetcher = (config) => async (dispatch) => {
   await axios
     .get("/chat", config)
@@ -94,6 +107,24 @@ export const ChatFetcher = (config) => async (dispatch) => {
     });
 };
 
+export const ChangeCheckPresence = (checkPresence) => dispatch => {
+  dispatch({
+    type: 'CHANGE_CHECK_PRESENCE',
+    payload: checkPresence
+  })
+}
+
+export const UpdateEmployee = (data,config) => async (dispatch) => {
+  await axios
+  .put("/employee/updateemployee",data,config)
+  .then((result)=>{
+    console.log(result.data)
+    // dispatch({
+    //   type: "UPDATE_EMPLOYEE",
+    //   payload: result.data
+    // });
+  })
+}
   // await axios
   //   .put(`/employee/updatehours`, employeeToUpdate.connectedEmployee, config)
   //   .then((result) => {

@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { useHistory } from "react-router-dom";
 import './Project.css'
-import UpdateProject from './updateProject/UpdateProject'
 import Popup from './Popup'
-import PopupUpdate from './PopupUpdate'
 import AddProject from './addProject/AddProject'
 import axios from "axios";
 export default function Project(props) {
@@ -181,26 +179,25 @@ export default function Project(props) {
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
                                                     Start: {startD}
                                                 </div>
-                                                <div className="dropdown">
-                                                    <button type="button" className="btn btn-primary dropdown-toggle"
-                                                            data-toggle="dropdown">
-                                                    </button>
-                                                    <div className="dropdown-menu dropdown-menu-right">
-                                                        <div className="dropdown-item"
+                                                <div >
+                                                   
+                                                    <div >
+                                                        <div
                                                              onClick={() => deleteProject(proj._id)}>
                                                             <i className="fa fa-times" aria-hidden="true"></i> delete
                                                         </div>
-                                                        <div className="dropdown-item" onClick={() => {
+                                                        <div  onClick={() => {
                                                             updateProject(proj._id)
                                                         }}><i className="fa fa-pencil" aria-hidden="true">edit</i></div>
-                                                        <div className="dropdown-item" onClick={() => {
+                                                        <div c onClick={() => {
                                                             detailsProject(proj._id)}}>
                                                             <i className="fa fa-arrow-circle-o-right"
                                                                  aria-hidden="true"></i> more details</div>
-                                                        <div className="dropdown-item"  onClick={() => {
+                                                                  <div onClick={() => {
                                                             searchEmployees(proj._id)}}>
-                                                            <i className='fa fa-search'>  Employees</i>
-                                                        </div>
+                                                            <i className="fa fa-arrow-circle-o-right"
+                                                                 aria-hidden="true"></i> search</div>
+                                                       
 
                                                     </div>
                                                 </div>
@@ -246,10 +243,7 @@ export default function Project(props) {
                     <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
                         <AddProject></AddProject>
                     </Popup>
-                    <PopupUpdate trigger={buttonPopupUpdate} setTrigger={setButtonPopupUpdate}>
-                        <UpdateProject></UpdateProject>
-                    </PopupUpdate>
-
+                
 
                 </div>
 

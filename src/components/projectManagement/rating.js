@@ -52,39 +52,39 @@ export default function Rating() {
     return (
         <main>
             <div className="main__container">
-        <div className="App">
-            <div className="project-boxes jsGridView">
+        <div className="App-o">
+            <div className="project-boxes-o jsGridView-o">
             {allEmployeeList.map((emp, key) => {
-                return <div className="project-box-wrapper">
-                    <div className="project-box">
-                 <div className="container">
+                return <div className="project-box-wrapper-o">
+                    <div className="project-box-o">
+                 <div className="container-o">
                 {/*<h1>Employee Flip Card using CSS Animations</h1>*/}
-                <div className="flip-card" key={emp._id}>
-                    <div className="flip-card-inner">
-                        <div className="flip-card-front">
-                            <div className="employee-image-container" id="john-smith" ><img src={man} style={ {width:50,height:50}}/></div>
-                            <h2 className="employee-title">{emp?.userName} </h2>
-                            <p className="employee-description">Developer, OnTime</p>
+                <div className="flip-card-o" key={emp._id}>
+                    <div className="flip-card-inner-o">
+                        <div className="flip-card-front-o">
+                            <div className="employee-image-container-o" id="john-smith" ><img src={man} style={ {width:50,height:50}}/></div>
+                            <h2 className="employee-title-o">{emp?.userName} </h2>
+                            <p className="employee-description-o">Developer, OnTime</p>
                         </div>
-                        <div className="flip-card-back">
-                            <div className="info-row-container">
-                                <div className="info-row">
-                                    <span className="icon"><i className="fa fa-envelope"></i>
+                        <div className="flip-card-back-o">
+                            <div className="info-row-container-o">
+                                <div className="info-row-o">
+                                    <span className="icon-o"><i className="fa fa-envelope"></i>
                                     </span>
-                                    <span className="info"><a href="#">{emp?.email}</a></span>
+                                    <span className="info-o"><a href="#">{emp?.email}</a></span>
                                 </div>
-                                <div className="info-row">
-                                    <span className="icon"><i className='fa fa-folder-open'></i>
+                                <div className="info-row-o">
+                                    <span className="icon-o"><i className='fa fa-folder-open'></i>
 </span>
-                                    <span className="info"> Worked Projects:{emp?.projects.length}</span>
+                                    <span className="info-o"> Worked Projects:{emp?.projects.length}</span>
                                 </div>
-                                <div className="info-row">
-                                    <span className="icon"><i className='fa fa-star'></i>
+                                <div className="info-row-o">
+                                    <span className="icon-o"><i className='fa fa-star'></i>
 
 </span>
-                                    <span className="info"> reviews: {emp?.nbRating}</span>
+                                    <span className="info-o"> reviews: {emp?.nbRating}</span>
                                 </div>
-                                <div className="info" style={{color: '#4f3ff0'}}>
+                                <div className="info-o" style={{color: '#4f3ff0'}}>
                                     <strong>Skills: </strong> {emp?.skills?.map((skill) => {
                                     return  <strong>{skill},</strong>   })}
                                 </div>

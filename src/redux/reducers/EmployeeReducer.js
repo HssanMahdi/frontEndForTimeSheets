@@ -12,7 +12,10 @@ const initialState = {
   timeLogin: "",
   longLatLogin: {},
   socket: "",
-  taskNow:{}
+  notification: [],
+  selectedChat: {},
+  taskNow: {},
+  checkPresence: []
 };
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -68,7 +71,10 @@ export default function (state = initialState, action) {
         timeLogin: "",
         longLatLogin: {},
         socket: "",
-        taskNow:{}
+        notification: [],
+        selectedChat: {},
+        taskNow: {},
+        checkPresence: []
       };
     case "LOCATION":
       return {
@@ -84,6 +90,26 @@ export default function (state = initialState, action) {
       return {
         ...state,
         taskNow: action.payload
+      };
+    case 'CHANGE_CHECK_PRESENCE':
+      return {
+        ...state,
+        checkPresence: action.payload
+      }
+    case "NOTIFICATIONS_CHANGE":
+      return {
+        ...state,
+        notification: action.payload
+      };
+    case "SELECTEDCHAT_CHANGE":
+      return {
+        ...state,
+        selectedChat: action.payload
+      };
+    case "UPDATE_EMPLOYEE":
+      return {
+        ...state,
+        connectedEmployee: action.payload
       };
     default:
       return state;

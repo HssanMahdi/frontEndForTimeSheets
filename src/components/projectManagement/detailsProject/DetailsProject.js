@@ -329,7 +329,8 @@ export default function DetailsProject(props) {
                                             <div className="modal-footer">
                                                 <input type="button" className="btn btn-default" data-dismiss="modal"
                                                        defaultValue="Cancel"/>
-                                                <input type="submit" className="btn btn-success" defaultValue="Add"/>
+                                                       <button type="submit" className="btn btn-success" > Add</button>
+                                                {/* <input type="submit" className="btn btn-success" defaultValue="Add"/> */}
                                             </div>
                                         </form>
                                     </div>
@@ -493,8 +494,8 @@ export default function DetailsProject(props) {
                             </div>
                         </div>
 
-                        <div className="table-wrapper">
-                            <div className="table-title">
+                        <div className="table-wrapper-o">
+                            <div className="table-title-o">
                                 <div className="row">
                                     <div className="col-sm-6">
                                         <h2>Employees <b>Management</b></h2>
@@ -509,7 +510,7 @@ export default function DetailsProject(props) {
                                 <thead>
                                 <tr>
                                     <th>
-                    <span className="custom-checkbox">
+                    <span className="custom-checkbox-o">
                       <input type="checkbox" id="selectAll"/>
                       <label htmlFor="selectAll"/>
                     </span>
@@ -523,7 +524,7 @@ export default function DetailsProject(props) {
                                 <tbody>
                                 <tr>
                                     <td>
-                    <span className="custom-checkbox">
+                    <span className="custom-checkbox-o">
                       <input type="checkbox" id="checkbox1" name="options[]" defaultValue={1}/>
                       <label htmlFor="checkbox1"/>
                     </span>
@@ -556,7 +557,7 @@ export default function DetailsProject(props) {
                                 {employeeList.map((emp, key) => {
                                     return <tr>
                                         <td>
-                    <span className="custom-checkbox">
+                    <span className="custom-checkbox-o">
                       <input type="checkbox" id="checkbox1" name="options[]" defaultValue={1}/>
                       <label htmlFor="checkbox1"/>
                     </span>

@@ -25,7 +25,21 @@
   font-size: 15px;
   font-weight: 700;
 }
-
+.common-count {
+  background: #b52818;
+  color: #ffffff;
+ 
+  border-radius: 30px;
+  text-align: center;
+  border: 1px solid #fff;
+  position: absolute;
+  top: 8px;
+  width: 19px;
+  font-size: 10px;
+  height: 18px;
+  padding-top: 0px;
+  right: 122px;
+}
 .navbar__left .active_link {
   color: #265acc;
   border-bottom: 3px solid #265acc;
@@ -42,7 +56,10 @@
   margin-left: 20px;
   text-decoration: none;
 }
-
+.navbar__right> .search-box {
+  margin-left: 20px;
+  
+}
 .navbar__right > a > i {
   color: #a5aaad;
   font-size: 16px;
@@ -61,5 +78,104 @@
 @media only screen and (max-width: 480px) {
   .navbar__left {
     display: none;
+  }
+}
+
+.button-53 {
+  background-color: #3DD1E7;
+  border: 0 solid #E5E7EB;
+  box-sizing: border-box;
+  color: #000000;
+  display: inline;
+  font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  justify-content: center;
+  line-height: 1.75rem;
+  padding: .75rem 1.65rem;
+  position: absolute;
+  text-align: center;
+  text-decoration: none #000000 solid;
+  text-decoration-thickness: auto;
+  width: 100%;
+  max-width: 218px;
+  font-size: 16px !important;
+  position: absolute;
+  cursor: pointer;
+  /* transform: rotate(-2deg); */
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  top: 2px;
+  
+}
+
+.button-53:focus {
+  outline: 0;
+}
+
+.button-53:after {
+  content: '';
+  position: absolute;
+  border: 1px solid #000000;
+  bottom: 4px;
+  left: 4px;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+}
+
+.button-53:hover:after {
+  bottom: 2px;
+  left: 2px;
+}
+.search-box {
+ 
+
+  background: #f3f4f6;
+  height: 45px;
+  border-radius: 50px;
+  padding: 10px;
+}
+
+.search-btn {
+  color: white;
+  float: right;
+  width: 29px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 2s;
+}
+
+.fa-search {
+  background: #f3f4f6;
+  font-size: 24px;
+}
+
+.search-input11 {
+  border: none;
+  background: none;
+  outline: none;
+  float: left;
+  padding: 0;
+  color: rgb(32, 28, 28);
+  font-size: 17px;
+  transition: 0.4s;
+  line-height: 30px;
+  width: 0;
+  border: none;
+}
+
+.search-box:hover>.search-input11 {
+  width: 250px;
+  padding: 0 7px;
+}
+@media (min-width: 768px) {
+  .button-53 {
+    padding: .75rem 3rem;
+    font-size: 1.25rem;
   }
 }

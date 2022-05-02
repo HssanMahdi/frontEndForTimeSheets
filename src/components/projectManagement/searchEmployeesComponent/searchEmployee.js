@@ -41,13 +41,13 @@ export default function SearchEmployees() {
     return (
         <main>
             <div className="main__container">
-                <div className="app-container">
-                    <div className="app-header">
-                        <div className="app-header-left">
-                            <span className="app-icon"/>
-                            <p className="app-name">Search employees</p>
-                            <div className="search-wrapper">
-                                <input className="search-input" type="text" placeholder="Search"/>
+                <div className="app-container-o">
+                    <div className="app-header-o">
+                        <div className="app-header-left-o">
+                            <span className="app-icon-o"/>
+                            <p className="app-name-o">Search employees</p>
+                            <div className="search-wrapper-o">
+                                <input className="search-input-o" type="text" placeholder="Search"/>
                                 <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="none"
                                      stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                      className="feather feather-search" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@ export default function SearchEmployees() {
                                 </svg>
                             </div>
                         </div>
-                        <div className="app-header-right">
+                        <div className="app-header-right-o">
                             <button className="add-btn" title="Add New Project">
                                 <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" width={16} height={16}
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}
@@ -68,39 +68,33 @@ export default function SearchEmployees() {
                             </button>
                         </div>
                     </div>
-                    <div className="app-content">
-                        <div className="projects-section">
-                            <div className="projects-section-header">
+                    <div className="app-content-o">
+                        <div className="projects-section-o">
+                            <div className="projects-section-header-o">
                                 <p>According To Projects</p>
                             </div>
-                            <div className="project-boxes jsGridView">
+                            <div className="project-boxes-o jsGridView-o">
                                 {workedProjects?.map((emp, key) => {
-                                    return <div className="project-box-wrapper">
-                                        <div className="project-box" style={{backgroundColor: '#e9e7fd'}}>
-                                            <div className="project-box-header" key={emp?._id}>
+                                    return <div className="project-box-wrapper-o">
+                                        <div className="project-box-o" style={{backgroundColor: '#e9e7fd'}}>
+                                            <div className="project-box-header-o" key={emp?._id}>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
                                                     {emp?.nbRating} reviews: {emp?.rating}
                                                 </div>
-                                                <div className="dropdown">
-                                                    <button type="button" className="btn btn-primary dropdown-toggle"
-                                                            data-toggle="dropdown">
+                                              
+                                                    <button type="button" className="btn btn-primary"
+                                                              onClick={() => assignEmployee(emp._id)} > assign
                                                     </button>
-                                                    <div className="dropdown-menu dropdown-menu-right">
-                                                        <div className="dropdown-item"
-                                                             onClick={() => assignEmployee(emp._id)}>
-                                                            <i className="fa fa-times" aria-hidden="true"></i> assign
-                                                        </div>
-                                                        <div className="dropdown-item" ><i className="fa fa-pencil" aria-hidden="true">show profile</i></div>
-                                                    </div>
-                                                </div>
+                                                    
+                                              
                                             </div>
-                                            <div className="project-box-content-header">
-                                                <p className="box-content-header">{emp?.userName}</p>
-                                                <p className="box-content-subheader">{emp?.email}</p>
+                                            <div className="project-box-content-header-o">
+                                                <p className="box-content-header-o">{emp?.userName}</p>
+                                                <p className="box-content-subheader-o">{emp?.email}</p>
                                             </div>
-                                            <div className="project-box-footer">
-                                                <div className="participants">
-                                                    <p className="box-progress-header ">
+                                            <div className="project-box-footer-o">
+                                                <div className="participants-o">
+                                                    <p className="box-progress-header-o ">
                                                        <span>Worked Projects:</span> <span style={{color:"red"}}> {emp?.projectsWorked?.length}</span>
                                                     </p>
                                                 </div>
@@ -116,39 +110,30 @@ export default function SearchEmployees() {
                         </div>
                     </div>
 
-                    <div className="app-content">
-                        <div className="projects-section">
-                            <div className="projects-section-header">
+                    <div className="app-content-o">
+                        <div className="projects-section-o">
+                            <div className="projects-section-header-o">
                                 <p>According To Skills</p>
                             </div>
-                            <div className="project-boxes jsGridView">
+                            <div className="project-boxes-o jsGridView-o">
                                 {employeesSkills?.map((employee, key) => {
-                                    return <div className="project-box-wrapper">
-                                        <div className="project-box" style={{backgroundColor: '#AAB6FB'}}>
-                                            <div className="project-box-header" key={employee?._id}>
+                                    return <div className="project-box-wrapper-o">
+                                        <div className="project-box-o" style={{backgroundColor: '#AAB6FB'}}>
+                                            <div className="project-box-header-o" key={employee?._id}>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
                                                     {employee?.nbRating} reviews: {employee?.rating}
                                                 </div>
-                                                <div className="dropdown">
-                                                    <button type="button" className="btn btn-primary dropdown-toggle"
-                                                            data-toggle="dropdown">
+                                                <button type="button" className="btn btn-primary"
+                                                              onClick={() => assignEmployee(employee._id)} > assign
                                                     </button>
-                                                    <div className="dropdown-menu dropdown-menu-right">
-                                                        <div className="dropdown-item"
-                                                             onClick={() => assignEmployee(employee._id)}>
-                                                            <i className="fa fa-times" aria-hidden="true"></i> assign
-                                                        </div>
-                                                        <div className="dropdown-item" ><i className="fa fa-pencil" aria-hidden="true">show profile</i></div>
-                                                    </div>
-                                                </div>
                                             </div>
-                                            <div className="project-box-content-header">
-                                                <p className="box-content-header">{employee?.userName}</p>
-                                                <p className="box-content-subheader">{employee?.email}</p>
+                                            <div className="project-box-content-header-o">
+                                                <p className="box-content-header-o">{employee?.userName}</p>
+                                                <p className="box-content-subheader-o">{employee?.email}</p>
                                             </div>
-                                            <div className="project-box-footer">
-                                                <div className="participants">
-                                                    <p className="box-progress-header ">
+                                            <div className="project-box-footer-o">
+                                                <div className="participants-o">
+                                                    <p className="box-progress-header-o ">
                                                         <span> Worked projects:  {employee?.projects?.length}</span>
                                                     </p>
                                                 </div>

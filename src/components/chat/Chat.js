@@ -3,16 +3,19 @@ import "./Chat.css";
 import hello from "../../assets/chat.svg";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { CompanWorkers } from "../../redux/actions/EmployeeActions";
+import {
+  ChangeSelectedChat,
+  CompanWorkers,
+} from "../../redux/actions/EmployeeActions";
 import Message from "./message/Message";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatFetcher } from "../../redux/actions/EmployeeActions";
+import { io } from "socket.io-client";
 // import { Socket } from "socket.io-client";
-
-export default function Chat() {
+var socket;
+export default function Chat(props) {
   const { EmployeeReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const socket = EmployeeReducer.socket;
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [selectedChat, setSelectedChat] = useState({});
@@ -29,12 +32,18 @@ export default function Chat() {
     const { data } = await axios.get(`/employee?search=${search}`, config);
     setSearchResult(data);
   };
-
+  // useEffect(()=>{
+  //   dispatch(ChatFetcher(config));
+  // },[EmployeeReducer.chats])
   const accessChat = async () => {
     let employeeToCheckChat = {
       employeeId: selectedSearchedEmployee._id,
     };
     const { data } = await axios.post("/chat", employeeToCheckChat, config);
+    socket.emit('chatCreation',data.employees)
+    
+    dispatch(ChangeSelectedChat(data));
+    fetchChats();
     setSelectedChat(data);
   };
   function Check(props) {
@@ -43,15 +52,23 @@ export default function Chat() {
     }
     return <></>;
   }
+  useEffect(() => () => dispatch(ChangeSelectedChat()), []);
   useEffect(() => {
+    socket = io.connect("http://localhost:3001", {
+      transports: ["websocket"],
+    });
     dispatch(CompanWorkers(config));
     fetchChats();
   }, []);
-  if (socket) {
-    socket.on("refetchChats", () => {
-      fetchChats();
-    });
-  }
+  useEffect(() => {
+    setSelectedChat(EmployeeReducer.selectedChat);
+  }, [EmployeeReducer.selectedChat]);
+  // if (socket) {
+  //   socket.on("refetchChats", () => {
+  //     fetchChats();
+  //   });
+  // }
+
   useEffect(() => {
     dispatch(CompanWorkers(config));
     searchEmployees();
@@ -64,6 +81,10 @@ export default function Chat() {
     }
   }, [selectedSearchedEmployee]);
 
+  function changeSelectedChat1(chat) {
+    setSelectedChat(chat);
+    dispatch(ChangeSelectedChat(chat));
+  }
   return (
     <main>
       <div className="main__container">
@@ -88,7 +109,7 @@ export default function Chat() {
         </div>
         <div className="row clearfix my-3">
           <div className="col-lg-12">
-            <div className="card chat-app">
+            <div className="cardCHAT chat-app">
               <div id="plist" className="people-list">
                 <div className="input-group">
                   <div className="input-group-prepend">
@@ -111,14 +132,16 @@ export default function Chat() {
                       <li
                         key={i}
                         className="clearfix"
-                        onClick={() => setSelectedSearchedEmployee(search)}
+                        onClick={() => {
+                          setSelectedSearchedEmployee(search);
+                          setSearch("");
+                        }}
                       >
                         <img src={search.images} alt="avatar" />
                         <div className="about">
                           {search.userName}
                           <div className="status">
-                            {" "}
-                            <i className="fa fa-circle offline"></i>{" "}
+                            <i className="fa fa-circle offline"></i>
                             {search.email}
                           </div>
                         </div>
@@ -131,16 +154,20 @@ export default function Chat() {
                   className="list-unstyled scrollbar-card chat-list mt-2 mb-0"
                 >
                   {EmployeeReducer.chats?.map((chat) =>
-                    typeof chat.isGroup !== "undefined" ? (
+                    !chat.isGroup ? (
                       <React.Fragment key={chat._id}>
                         <li
                           className="clearfix"
-                          onClick={() => setSelectedChat(chat)}
+                          onClick={() => changeSelectedChat1(chat)}
                         >
+                          {chat.employees?.map((employee, index) => (
+                            employee._id !== EmployeeReducer.connectedEmployee._id ? (
                           <img
-                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                          key={index}
+                            src={employee.images}
                             alt="avatar"
-                          />
+                          />):null
+                          ))}
                           <div className="about">
                             {chat.employees?.map((employee, index) => (
                               <React.Fragment key={index}>
@@ -148,8 +175,15 @@ export default function Chat() {
                               </React.Fragment>
                             ))}
                             <div className="status">
-                              {" "}
-                              <i className="fa fa-circle offline"></i> chat{" "}
+                              {typeof chat.lastMessage !== "undefined" &&
+                              chat.lastMessage !== null ? (
+                                <>
+                                  <i className="fa fa-circle offline"></i>
+                                  {chat.lastMessage.content}
+                                </>
+                              ) : (
+                                <></>
+                              )}
                             </div>
                           </div>
                         </li>
@@ -158,17 +192,22 @@ export default function Chat() {
                       <li
                         key={chat._id}
                         className="clearfix"
-                        onClick={() => setSelectedChat(chat)}
+                        onClick={() => changeSelectedChat1(chat)}
                       >
                         <img
-                          src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                          src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg?fbclid=IwAR2PGk8pKz8LIGKpG1d3Y2Z-gXOoZeY8w7E2leuZNGDctvWZB0mpLuOc0DM"
                           alt="avatar"
                         />
                         <div className="about">
                           {chat.chatName}
                           <div className="status">
-                            {" "}
-                            <i className="fa fa-circle offline"></i> chat{" "}
+                            {typeof chat.lastMessage !== "undefined" &&
+                            chat.lastMessage !== null ? (
+                              <>
+                                <i className="fa fa-circle offline"></i>
+                                {chat.lastMessage.content}
+                              </>
+                            ) : null}
                           </div>
                         </div>
                       </li>

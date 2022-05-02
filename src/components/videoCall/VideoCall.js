@@ -1,261 +1,261 @@
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import TextField from "@material-ui/core/TextField";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import PhoneIcon from "@material-ui/icons/Phone";
 import React, { useEffect, useRef, useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import Peer from "simple-peer";
 import io from "socket.io-client";
-import "./videoCall.css";
+import Peer from "simple-peer";
+import styled from "styled-components";
 import logo from "../../assets/logo.png";
+import "../videoCall/videoCall.css";
+import { Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
-// const socket = io.connect("http://localhost:3001");
+import Swal from "sweetalert2";
 
+const StyledVideo = styled.video`
+  height: 50%;
+  width: 45%;
+  margin-left: 70px;
+  border-radius: 100px;
+  padding-bottom: 30px;
+`;
+
+const Cont = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
+
+const Test = styled.div`
+  width: 10%;
+  height: 10%;
+  background: yellow;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const Video = (props) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    props.peer.on("stream", (stream) => {
+      ref.current.srcObject = stream;
+    });
+  }, []);
+
+  return <StyledVideo playsInline autoPlay ref={ref} />;
+};
+
+const videoConstraints = {
+  height: window.innerHeight / 2,
+  width: window.innerWidth / 2,
+};
 export default function VideoCall(props) {
   const { EmployeeReducer } = useSelector((state) => state);
-  const socket = EmployeeReducer.socket;
-  const [me, setMe] = useState("");
-  const [stream, setStream] = useState();
-  const [receivingCall, setReceivingCall] = useState(false);
-  const [caller, setCaller] = useState("");
-  const [callerSignal, setCallerSignal] = useState();
-  const [callAccepted, setCallAccepted] = useState(false);
-  const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState("");
-  const [empToCall, setEmpToCall] = useState({});
-  const myVideo = useRef();
+  const [peers, setPeers] = useState([]);
+  const [usersInCall, setUsersInCall] = useState([]);
+  const socketRef = useRef();
   const userVideo = useRef();
-  const connectionRef = useRef();
+  const peersRef = useRef([]);
+  const connectionRef = useRef([]);
+  const [stream, setStream] = useState();
+  const [redirectOrNo, setredirectOrNo] = useState(false);
+  const [cameraEnabled, setCameraEnabled] = useState(true);
+  const [microphoneEnabled, setMicrophoneEnabled] = useState(true);
+  const [screenSharingActive, setScreenSharingActive] = useState(false);
+  const roomID = props.match.params.roomID;
 
-  const callUser = () => {
+  useEffect(() => {
+    socketRef.current = io.connect("/");
+    navigator.mediaDevices
+      .getUserMedia({ video: videoConstraints, audio: true })
+      .then((stream) => {
+        setStream(stream);
+        userVideo.current.srcObject = stream;
+        socketRef.current.emit("join roomsimple", roomID);
+        socketRef.current.on("all users", (users) => {
+          const peers = [];
+          users.forEach((userID) => {
+            const peer = createPeer(userID, socketRef.current.id, stream);
+            connectionRef.current = peer;
+            peersRef.current.push({
+              peerID: userID,
+              peer,
+            });
+            peers.push(peer);
+          });
+          setPeers(peers);
+        });
+        socketRef.current.on("usersincall", (usInCall) => {
+          console.log("wselni");
+          setUsersInCall(usInCall);
+        });
+        socketRef.current.on("user joined", (payload) => {
+          const peer = addPeer(payload.signal, payload.callerID, stream);
+          connectionRef.current = peer;
+          peersRef.current.push({
+            peerID: payload.callerID,
+            peer,
+          });
+
+          setPeers((users) => [...users, peer]);
+        });
+
+        socketRef.current.on("receiving returned signal", (payload) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          item.peer.signal(payload.signal);
+        });
+      });
+    if (props.history.action === "PUSH") {
+      socketRef.current.emit("callUser", {
+        caller: EmployeeReducer.connectedEmployee,
+        toCall: props.location.state.empToCall,
+        link: roomID,
+      });
+    }
+    socketRef.current.on("otherhanguptwo", () => {
+      Swal.fire({
+        icon: "error",
+        title: "Call ended.",
+        timer: 2500,
+      });
+      setredirectOrNo(true);
+    });
+  }, []);
+
+  // for (let [key, value] of peersRef.current) {
+  //   // peersRef.current
+  //   //   .get(key)[0]
+  //   //   .peerConnection.getSenders()[1]
+  //   console.log(peersRef.current.get(key)[0]);
+  // }
+  // peersRef.current.forEach()
+
+  function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream: stream,
+      stream,
     });
-    peer.on("signal", (data) => {
-      socket.emit("callUser", {
-        userToCall: empToCall._id,
-        signalData: data,
-        from: EmployeeReducer.connectedEmployee._id,
-        name: EmployeeReducer.connectedEmployee.userName,
-      });
-    });
-    peer.on("connect", (stream) => {
-      userVideo.current.srcObject = stream;
-    });
-    socket.on("callAccepted", (signal) => {
-      setCallAccepted(true);
-      peer.signal(signal);
-    });
-    connectionRef.current = peer;
-  };
 
-  useEffect(() => {
-    if (props.location.state.callerSignal) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          myVideo.current.srcObject = stream;
-        });
-      // socket.on("callUser", (data) => {
-      //   setReceivingCall(true);
-      //   setCaller(data.from);
-      //   // setName(data.name);
-      //   setName(EmployeeReducer.connectedEmployee.userName);
-      //   setCallerSignal(data.signal);
-      // });
-      setCallAccepted(true);
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: stream,
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("sending signal", {
+        userToSignal,
+        callerID,
+        signal,
       });
-      peer.on("signal", (data) => {
-        console.log("data : ",data)
-        socket.emit("answerCall", { signal: data, to: props.location.state.caller });
-      });
-      peer.on("stream", (stream) => {
-        userVideo.current.srcObject = stream;
-      });
-      peer.signal(props.location.state.callerSignal);
-      connectionRef.current = peer;
-    } else {
-      setEmpToCall(props.location.state.empToCall);
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          myVideo.current.srcObject = stream;
-        });
-      socket.emit("sendMe", {
-        me: EmployeeReducer.connectedEmployee._id
-      });
-      socket.on("me", (id) => {
-        setMe(id);
-      });
-      socket.on("callUser", (data) => {
-        setReceivingCall(true);
-        setCaller(data.from);
-        // setName(data.name);
-        setName(EmployeeReducer.connectedEmployee.userName);
-        setCallerSignal(data.signal);
-      });
-    }
-  }, []);
-  //unmount
-  useEffect(() => () => console.log("unmount"), []);
-  const answerCall = () => {
-    setCallAccepted(true);
+    });
+
+    return peer;
+  }
+
+  function addPeer(incomingSignal, callerID, stream) {
     const peer = new Peer({
       initiator: false,
       trickle: false,
-      stream: stream,
+      stream,
     });
-    peer.on("signal", (data) => {
-      console.log("data : ",data)
-      socket.emit("answerCall", { signal: data, to: caller });
+
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("returning signal", { signal, callerID });
     });
-    peer.on("stream", (stream) => {
-      userVideo.current.srcObject = stream;
-    });
-    peer.signal(callerSignal);
-    connectionRef.current = peer;
-  };
-  const declineCall = () => {
-    setCallEnded(true);
-  };
+
+    peer.signal(incomingSignal);
+
+    return peer;
+  }
 
   const leaveCall = () => {
-    setCallEnded(true);
-    connectionRef.current.destroy();
+    // console.log("melowl", peers);
+    // socketRef.current.destroy();
+    // stream?.getTracks().forEach(function (track) {
+    //   track.stop();
+    // });
+    if (props.history.action === "PUSH") {
+      console.log("here");
+      socketRef.current.emit("hanguptwo", {
+        caller: true,
+        tohangup: props.location.state.empToCall,
+      });
+    } else {
+      socketRef.current.emit("hanguptwo", {
+        caller: false,
+        usersInCall: usersInCall,
+      });
+    }
+    // socketRef.current.emit("hangup")
+    // var index = peers.indexOf(connectionRef.current);
+
+    // if (index !== -1) {
+    //   peers.splice(index, 1);
+    //   setPeers(peers);
+    // }
+
+    // console.log("melekh", peers);
+
+    setredirectOrNo(true);
+    // stream.getTracks[0].enabled = false;
   };
+
+  const handleCameraButtonPressed = () => {
+    stream.getVideoTracks()[0].enabled = !cameraEnabled;
+    setCameraEnabled(!cameraEnabled);
+  };
+  const handleMicButtonPressed = () => {
+    stream.getAudioTracks()[0].enabled = !microphoneEnabled;
+    setMicrophoneEnabled(!microphoneEnabled);
+  };
+
   return (
-    <main>
+    <main id="idVIID">
       <div className="main__container">
         <div className="bodyVideo">
           <div className="side__img ">
             <img src={logo} className="img_video " alt="logo" />
             <h2 style={{ textAlign: "center", color: "#fff" }}>OnTime</h2>
-            {/* <h4 style={{ textAlign: "center", color: "#fff" }}>Please Confirm Call</h4>
-            <div className="call-button" style={{ textAlign: "center"}}>
-                {callAccepted && !callEnded ? (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={leaveCall}
-                  >
-                    End Call
-                  </Button>
-                ) : (
-                  <IconButton
-                    color="primary"
-                    aria-label="call"
-                    onClick={() => callUser()}
-                  >
-                    <PhoneIcon fontSize="large" />
-                  </IconButton>
-                )}
-              </div> */}
           </div>
-
-          <div className="container-video">
-            <div className="video-container">
-              <div className="video">
-                {stream && (
-                  <video
-                    playsInline
-                    muted
-                    ref={myVideo}
-                    autoPlay
-                    className="stream-video "
-                  />
-                )}
-              </div>
-              <div className="video">
-                {callAccepted && !callEnded ? (
-                  <video
-                    playsInline
-                    ref={userVideo}
-                    autoPlay
-                    className="stream-video "
-                  />
-                ) : null}
-              </div>
-            </div>
-            <div className="myId">
-              {/* <TextField
-                id="filled-basic"
-                label="Name"
-                variant="filled"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ marginBottom: "20px" }}
-              /> */}
-              {/* <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AssignmentIcon fontSize="large" />}
-                >
-                  Copy ID
-                </Button>
-              </CopyToClipboard> */}
-
-              <div className="call-button">
-                {callAccepted && !callEnded ? (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={leaveCall}
-                  >
-                    End Call
-                  </Button>
-                ) : (
-                  <IconButton
-                    color="primary"
-                    aria-label="call"
-                    onClick={() => callUser()}
-                  >
-                    <PhoneIcon fontSize="large" />
-                  </IconButton>
-                )}
-              </div>
-            </div>
-            <div>
-              {receivingCall && !callAccepted && !callEnded ? (
-                <div className="card-call">
-                  <div className="header-call">
-                    <div className="animation-call">
-                      <span className="icon ring"></span>
-                      <div className="cercle one"></div>
-                      <div className="cercle two"></div>
-                      <div className="cercle three"></div>
-                    </div>
-
-                    <p className="phoneNumber">{name}</p>
-                    <p className="calling">Calling</p>
-                  </div>
-
-                  <div className="footer-call">
-                    <div
-                      className="bouton-call raccrocher"
-                      onClick={declineCall}
-                    >
-                      <span className="icon red"></span>
-                    </div>
-                    <div className="bouton-call decrocher" onClick={answerCall}>
-                      <span className="icon green"></span>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
+          <Cont>
+            <StyledVideo muted ref={userVideo} autoPlay playsInline />
+            {peers.map((peer, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <Video peer={peer} />
+                </React.Fragment>
+              );
+            })}
+          </Cont>
+          <div className="contVid">
+            <button style={{ background: "#cd1212" }} className=" btn vidBtn">
+              <i
+                onClick={leaveCall}
+                style={{ color: "white" }}
+                className="bi bi-telephone-fill"
+              ></i>
+            </button>
+            <button
+              style={{ background: "rgb(46 78 190" }}
+              className="btn vidBtn"
+            >
+              <i
+                style={{ color: "white" }}
+                onClick={handleCameraButtonPressed}
+                className="bi bi-camera-video-off-fill"
+              ></i>
+            </button>
+            <button
+              style={{ background: "rgb(105 120 173)" }}
+              className="btn vidBtn"
+            >
+              <i
+                style={{ color: "white" }}
+                onClick={handleMicButtonPressed}
+                className="bi bi-mic-mute-fill"
+              ></i>
+            </button>
           </div>
         </div>
       </div>
+      {redirectOrNo ? <Redirect to="/home/chat" /> : null}
     </main>
   );
 }

@@ -12,12 +12,12 @@ main {
 }
 
 
-.App {
+.App-o {
     font-family: sans-serif;
     text-align: center;
 }
 
-.content {
+.content-o {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -53,14 +53,14 @@ body {
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-.container {
+.container-o {
     margin: 50px 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.flip-card {
+.flip-card-o {
     margin: 2%;
     background-color: transparent;
     width: 300px;
@@ -68,7 +68,7 @@ body {
     perspective: 1000px;
 }
 
-.flip-card-inner {
+.flip-card-inner-o {
     position: relative;
     width: 100%;
     height: 100%;
@@ -77,19 +77,19 @@ body {
     transform-style: preserve-3d;
 }
 
-.flip-card:hover .flip-card-inner {
+.flip-card-o:hover .flip-card-inner-o {
     transform: rotateY(180deg);
 }
 
-.flip-card-front,
-.flip-card-back {
+.flip-card-front-o,
+.flip-card-back-o {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
 }
 
-.flip-card-front {
+.flip-card-front-o {
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
     align-items: center;
@@ -99,7 +99,7 @@ body {
     padding: 2%;
 }
 
-.flip-card-back {
+.flip-card-back-o {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -109,7 +109,7 @@ body {
     padding: 2%;
 }
 
-.info-row-container {
+.info-row-container-o {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -118,24 +118,24 @@ body {
     padding: 10%;
 }
 
-.info-row {
+.info-row-o {
     display: grid;
     grid-template-columns: 20% 10% 70%;
     grid-template-areas: "icon . info";
 }
 
-.icon {
+.icon-o {
     color: #027bce;
 }
 
-.info {
+.info-o {
     grid-area: info;
     align-self: center;
     text-align: left;
     font-size: 1em;
 }
 
-.info a {
+.info-o a {
     color: #000;
     font-weight: 400;
     text-decoration: none;
@@ -143,11 +143,11 @@ body {
     align-self: center;
 }
 
-.info a:hover {
+.info-o a:hover {
     text-decoration: underline;
 }
 
-.all-employees {
+.all-employees-o {
     width: 80%;
     margin: 0 auto;
     display: flex;
@@ -157,7 +157,7 @@ body {
     padding-bottom: 10%;
 }
 
-.employee-image-container {
+.employee-image-container-o {
     width: 100px;
     height: 100px;
     overflow: hidden;
@@ -170,12 +170,12 @@ body {
     background-size: 200%;
 }
 
-.employee-title {
+.employee-title-o {
     font-size: 1.5em;
     color: #000000;
 }
 
-.employee-description {
+.employee-description-o {
     align-self: start;
     width: 80%;
     margin: 0 auto;
@@ -196,18 +196,18 @@ body {
     text-align: center;
 }
 
-.project-boxes {
+.project-boxes-o {
     margin: 0 -8px;
     overflow-y: auto;
 }
-.project-boxes.jsGridView {
+.project-boxes-o.jsGridView-o {
     display: flex;
     flex-wrap: wrap;
 }
-.project-boxes.jsGridView .project-box-wrapper {
+.project-boxes-o.jsGridView-o .project-box-wrapper-o {
     width: 33.3%;
 }
-.project-boxes.jsListView .project-box {
+.project-boxes-o.jsListView-o .project-box-o {
     display: flex;
     border-radius: 10px;
     position: relative;
