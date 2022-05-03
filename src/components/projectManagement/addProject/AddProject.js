@@ -101,18 +101,18 @@ export default function AddProject() {
                                    }}/>
                         </div>
                             <div className="col-form-label-sm"><h6 className="badge badge-primary"> choisir technologies</h6> </div>
-                            <ul className="checkbox-grid-o">
+                           <ul className="checkbox-grid-om">
                             {technologies.map((t, index) => (
                                 <li>
                                     <div className="form-group1-o">
-                                    <label  mlFor={t.name} className="form-check-label"> {t.name}
-                                    <input type="checkbox"
+                                        <label  mlFor={t.name} className="form-check-label"> {t.name}
+                                         <input type="checkbox"
                                            name={t.name}
                                            checked={t?.isChecked || false}
                                            onChange={handleChange1}
-                                    />
-                                </label>
-                                </div>
+                                         />
+                                         </label>
+                                    </div>
                                 </li>
                                 ))}
                             </ul>

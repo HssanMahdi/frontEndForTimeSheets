@@ -22,6 +22,10 @@ export default function SearchEmployees() {
             );
         }, []);
 
+      //affiche employee
+        const affiche = (id) => {
+            //setIdTask(id);
+        }
     //assign employee to project
     const assignEmployee = async (id) => {
         await axios.put("/projects/assignEmployeeToProject/" + idProject + "/" + id)
@@ -95,7 +99,7 @@ export default function SearchEmployees() {
                                             <div className="project-box-footer-o">
                                                 <div className="participants-o">
                                                     <p className="box-progress-header-o ">
-                                                       <span>Worked Projects:</span> <span style={{color:"red"}}> {emp?.projectsWorked?.length}</span>
+                                                       <span>Worked Projects:</span> <span style={{color:"red"}}> {emp?.workedProjects?.length}</span>
                                                     </p>
                                                 </div>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
@@ -134,7 +138,7 @@ export default function SearchEmployees() {
                                             <div className="project-box-footer-o">
                                                 <div className="participants-o">
                                                     <p className="box-progress-header-o ">
-                                                        <span> Worked projects:  {employee?.projects?.length}</span>
+                                                        <span> {employee?.workedProjects?.length}</span>
                                                     </p>
                                                 </div>
                                                 <div className="days-left" style={{color: '#4f3ff0'}}>
@@ -152,7 +156,10 @@ export default function SearchEmployees() {
 
                 </div>
 
-            </div>
+                                         
+                                      
+                                </div>
+                           
         </main>
     )
 }

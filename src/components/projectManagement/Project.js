@@ -36,14 +36,16 @@ export default function Project(props) {
                 setUpcoming(response.data.upcomingFinal)
                 setInProgress(response.data.inProgressFinal)
                 setFinished(response.data.finishedFinal)
-                console.log(response.data.startDate)
                 for(let i=0;i<response.data.projects.length;i++){
+                    if(response.data.projects[i].progress==70){
+                      console.log(response.data.projects[i]._id,response.data.projects[i].progress)
+                    }
+                    //console.log("progress",response.data.projects[i].progress)
                     startD=response.data.projects[i].startDate.split("T")
                     setStartD(startD[0])
                     endD=response.data.projects[i].endDate.split('T');
                     setEndD(endD[0])
                 }
-
             });
     }
 
@@ -58,7 +60,6 @@ export default function Project(props) {
         })
     }
  function searchEmployees(id){
-     console.log("fromProject",id)
      history.push({
          pathname: '/searchEmployees',
          state: { detail: id }
@@ -73,7 +74,7 @@ export default function Project(props) {
     const deleteProject = async (_id) => {
         await axios.delete(
             "/projects/" + _id).then(res => {
-            axios.get("projects/").then(
+            axios.get("/projects/").then(
                 (response) => {
                     setProjectList(response.data)
                 }
@@ -81,7 +82,6 @@ export default function Project(props) {
         })
             .catch(err => console.log(err))
     };
-
 
     // current day
     const current = new Date();
@@ -180,8 +180,29 @@ export default function Project(props) {
                                                     Start: {startD}
                                                 </div>
                                                 <div >
-                                                   
-                                                    <div >
+                                                <div className="dropdown">
+                                                    <button type="button" className="btn btn-primary dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                    </button>
+                                                    <div className="dropdown-menu dropdown-menu-right">
+                                                        <div className="dropdown-item"
+                                                             onClick={() => deleteProject(proj._id)}>
+                                                            <i className="fa fa-times" aria-hidden="true"></i> delete
+                                                        </div>
+                                                        <div className="dropdown-item" onClick={() => {
+                                                            updateProject(proj._id)
+                                                        }}><i className="fa fa-pencil" aria-hidden="true">edit</i></div>
+                                                        <div className="dropdown-item" onClick={() => {
+                                                            detailsProject(proj._id)}}>
+                                                            <i className="fa fa-arrow-circle-o-right"
+                                                                 aria-hidden="true"></i> more details</div>
+                                                        <div className="dropdown-item"  onClick={() => {
+                                                            searchEmployees(proj._id)}}>
+                                                            <i className='fa fa-search'>  Employees</i>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    {/* <div >
                                                         <div
                                                              onClick={() => deleteProject(proj._id)}>
                                                             <i className="fa fa-times" aria-hidden="true"></i> delete
@@ -197,9 +218,8 @@ export default function Project(props) {
                                                             searchEmployees(proj._id)}}>
                                                             <i className="fa fa-arrow-circle-o-right"
                                                                  aria-hidden="true"></i> search</div>
-                                                       
 
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                             <div className="project-box-content-header">
@@ -208,11 +228,26 @@ export default function Project(props) {
                                             </div>
                                             <div className="box-progress-wrapper">
                                                 <p className="box-progress-header">Progress</p>
+                                               
                                                 <div className="box-progress-bar">
-                                                    <span className="box-progress"
-                                                          style={{width: '50%', backgroundColor: '#4f3ff0'}}/>
+                                                <span>
+                 {proj?.progress===0 ?  <span className="box-progress" style={{width:'0%', backgroundColor: '#4f3ff0'}}/>
+
+                  : proj?.progress===10 ?  <span className="box-progress" style={{width:'10%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===20 ?<span className="box-progress" style={{width:'20%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===30 ?<span className="box-progress" style={{width:'30%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===40 ?<span className="box-progress" style={{width:'40%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===50 ?<span className="box-progress" style={{width:'50%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===60 ?<span className="box-progress" style={{width:'60%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===70 ?<span className="box-progress" style={{width:'70%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===80 ?<span className="box-progress" style={{width:'80%', backgroundColor: '#4f3ff0'}}/>
+                   :proj?.progress===90 ?<span className="box-progress" style={{width:'90%', backgroundColor: '#4f3ff0'}}/>
+                    :  <span className="box-progress" style={{width:'100%', backgroundColor: '#4f3ff0'}}/>}
+  </span>;
+                                                     {/* <span className="box-progress"
+                                                          style={{width:'{proj?.progress}%', backgroundColor: '#4f3ff0'}}/> */}
                                                 </div>
-                                                <p className="box-progress-percentage">50%</p>
+                                                <p className="box-progress-percentage">{proj?.progress}%</p>
                                             </div>
                                             <div className="project-box-footer">
                                                 <div className="participants">
@@ -222,7 +257,7 @@ export default function Project(props) {
                                                     <img
                                                         src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2555&q=80"
                                                         alt="participant"/>
-                                                    <p className="box-progress-header ">{proj?.projectLeader === null ? (
+                                                    <p className="box-progress-header ">Project leader:{proj?.projectLeader === null ? (
                                                     <span style={{color:"red"}}> add one</span>
                                                 ) : (
                                                     <span style={{color:"green"}}>  {proj?.projectLeader?.userName}</span>

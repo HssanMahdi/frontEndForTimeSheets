@@ -87,7 +87,12 @@ body {
     color: #777;
 }
 
-.checkbox-grid-o li {
+[type="checkbox"]:checked,
+[type="checkbox"]:not(:checked) {
+  position: absolute;
+  left: 100px !important;
+}
+.checkbox-grid-om li {
     display: block;
     float: left;
     width: 25%;
@@ -131,7 +136,7 @@ body {
   display: block;
   position: absolute;
   top: 2px;
-  left: 9px;
+  left:9px;
   width: 6px;
   height: 14px;
   border: solid #0079bf;
@@ -142,4 +147,3 @@ body {
   margin-left: 25px;
   border: 1px solid blue;
 }
-
