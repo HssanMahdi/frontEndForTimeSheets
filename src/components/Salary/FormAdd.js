@@ -86,7 +86,6 @@ function FormAdd() {
                 </select>
             </div>
 
-
             <div>
                 <label htmlFor="InputMonth">Month</label>
                 <select name="month" className="form-control" value={month} onChange={(e) => {

@@ -301,10 +301,17 @@ main {
   text-align: center;
 }
 
+<<<<<<< HEAD
 .nav-tabs.nav-justified > .dropdown .dropdown-menu {
   top: auto;
   left: auto;
 }
+=======
+/* .nav-tabs.nav-justified > .dropdown .dropdown-menu {
+  top: auto;
+  left: auto;
+} */
+>>>>>>> 17ea184e7adf45a57a5aa28e0e5596724bf5216e
 
 .nav-tabs.nav-justified > li > a {
   margin-right: 0;

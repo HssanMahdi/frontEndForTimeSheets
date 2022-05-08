@@ -20,6 +20,12 @@ const Profile = React.lazy(() => import("./components/userProfile/Profile"));
 const SignUpToCompany = React.lazy(() => import("./components/authentification/signUpToCompany/SignUpToCompany"));
 const ResetPassword = React.lazy(() => import("./components/authentification/resetpassword/ResetPassword"));
 const Employees = React.lazy(() => import("./components/employees/Employees"));
+const Project = React.lazy(() => import("./components/projectManagement/Project"));
+const UpdateProject = React.lazy(() => import("./components/projectManagement/updateProject/UpdateProject"));
+const DetailsProject = React.lazy(() => import("./components/projectManagement/detailsProject/DetailsProject"));
+const SearchEmployees = React.lazy(() => import("./components/projectManagement/searchEmployeesComponent/searchEmployee"));
+const rating = React.lazy(() => import("./components/projectManagement/rating"));
+const cv=React.lazy(() => import("./components/projectManagement/Cv"));
 const ProjectPlanning = React.lazy(() =>
   import("./components/projectPlanning/ProjectPlanning")
 );
@@ -33,12 +39,6 @@ const SearchGoogle = React.lazy(() =>
 const EmpLeaves = React.lazy(() => import("./components/leaves/empLeaves"));
 const AdminLeaves = React.lazy(() => import("./components/leaves/adminLeaves"));
 const Add_leaves = React.lazy(() => import("./components/leaves/Forms/addLeave"));
-const Project = React.lazy(() => import("./components/projectManagement/Project"));
-const UpdateProject = React.lazy(() => import("./components/projectManagement/updateProject/UpdateProject"));
-const DetailsProject = React.lazy(() => import("./components/projectManagement/detailsProject/DetailsProject"));
-const SearchEmployees = React.lazy(() => import("./components/projectManagement/searchEmployeesComponent/searchEmployee"));
-const rating = React.lazy(() => import("./components/projectManagement/rating"));
-const cv=React.lazy(() => import("./components/projectManagement/Cv"));
 const routes = [
   { path: "/", exact: true, name: "Login" },
   // {path : "/signup/:token" , name:"signUp" , component: SignUpToCompany},

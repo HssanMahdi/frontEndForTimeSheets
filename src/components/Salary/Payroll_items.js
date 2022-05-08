@@ -8,7 +8,6 @@ import {Button} from "@mui/material";
 function PayrollItems() {
     const [additions, setAdditions] = useState([])
     const history = useHistory();
-
     function refresh() {
         const url = '/additions/show';//api url
         fetch(url).then(resp => resp.json())//calling url by method GET

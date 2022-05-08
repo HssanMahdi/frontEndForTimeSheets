@@ -191,6 +191,18 @@ export default function Message(props) {
     socket.on("connection", setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    socket.on("message recieved", (newMessageRecieved) => {
+      console.log("chatnewmessage : ",newMessageRecieved.chat)
+      console.log("chat selected : ",EmployeeReducer.selectedChat._id)
+      if (
+        !EmployeeReducer.selectedChat._id || // if chat is not selected or doesn't match current chat
+        EmployeeReducer.selectedChat._id !== newMessageRecieved.chat._id
+      ) {
+        return;
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
   }, []);
 
   useEffect(() => {
