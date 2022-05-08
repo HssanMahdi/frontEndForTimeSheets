@@ -21,7 +21,11 @@ const SignUpToCompany = React.lazy(() => import("./components/authentification/s
 const ResetPassword = React.lazy(() => import("./components/authentification/resetpassword/ResetPassword"));
 const Employees = React.lazy(() => import("./components/employees/Employees"));
 const Project = React.lazy(() => import("./components/projectManagement/Project"));
+const UpdateProject = React.lazy(() => import("./components/projectManagement/updateProject/UpdateProject"));
 const DetailsProject = React.lazy(() => import("./components/projectManagement/detailsProject/DetailsProject"));
+const SearchEmployees = React.lazy(() => import("./components/projectManagement/searchEmployeesComponent/searchEmployee"));
+const rating = React.lazy(() => import("./components/projectManagement/rating"));
+const cv=React.lazy(() => import("./components/projectManagement/Cv"));
 const ProjectPlanning = React.lazy(() =>
   import("./components/projectPlanning/ProjectPlanning")
 );
@@ -49,7 +53,6 @@ const routes = [
   { path: "/home/search", name: "searchG", component: SearchGoogle },
   { path: "/home/videocall/:roomID", name: "videoCall", component: VideoCall },
   { path: "/home/profile", name: "profile", component: Profile },
-{ path: "/Project", name: 'project', component: Project },
 { path: '/home/employee_salary', name: 'employee_salary', component: Salary },
   { path: '/add_salary', name: 'add_salary',component: Add_popup  },
   { path: '/home/payroll_items', name: 'payroll_items',component: Payroll_items  },
@@ -63,7 +66,12 @@ const routes = [
   { path: '/home/emp_leaves', name: 'emp_leaves',component: EmpLeaves  },
   { path: '/home/admin_leaves', name: 'admin_leaves',component: AdminLeaves  },
   { path: '/add_leaves', name: 'add_leaves',component:Add_leaves  },
-{ path: "/detailsProject", name: 'updateProject', component: DetailsProject },
+{ path:"/Project", name:'project' ,component:Project},
+  { path:"/updateProject", name:'updateProject' ,component:UpdateProject},
+  { path:"/detailsProject", name:'detailsProject' ,component:DetailsProject},
+  { path:"/searchEmployees", name:'searchEmployees' ,component:SearchEmployees},
+  { path:"/rating", name:'rating' ,component:rating},
+  { path:"/cv", name:'cv' ,component:cv},
   {
     path: "/home/projectPlanning",
     name: "projectPlanning",
