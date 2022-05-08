@@ -151,15 +151,6 @@
     margin: 0 32px;
   }
   
-  .mode-switch {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    color: var(--main-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
   
   .search-wrapper {
     border-radius: 20px;

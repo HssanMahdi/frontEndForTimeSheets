@@ -124,6 +124,10 @@ export default function Sidebar({ sidebarOpen, closeSidebar }) {
               <i className="fa fa-briefcase"></i>
               <Link to="/home/payroll_items">Payroll Items</Link>
             </div>
+            <div className="sidebar__link">
+              <i className="fa fa-briefcase"></i>
+              <Link to="/home/payroll_items">Payroll Items</Link>
+            </div>
             <div className="sidebar__logout">
               <i className="fa fa-power-off"></i>
               <a href="#">Log out</a>
